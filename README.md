@@ -9,7 +9,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/antaresproject/project.svg)](https://github.com/antaresproject/project/stargazers)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/antaresproject/project/master/LICENSE)
 
-Description of module is not ready yet.
+Module users allows you to manage users in application. Every user is assigned to default group (member) and is able to login to their own area. 
+
+![acl](docs/img/users.png)
 
 ## Documentation
 
