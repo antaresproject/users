@@ -145,6 +145,8 @@ class PasswordBrokerControllerTest extends ApplicationTestCase
 
     /**
      * Test GET /antares/forgot/reset given token is null.
+     * 
+     * @expectedException \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
      */
     public function testGetEditActionGivenTokenIsNull()
     {

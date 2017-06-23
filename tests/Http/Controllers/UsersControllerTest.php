@@ -86,8 +86,6 @@ class UsersControllerTest extends ApplicationTestCase
      */
     public function testGetEditAction()
     {
-
-
         $this->call('GET', 'antares/users/1/edit');
         $this->assertResponseOk();
     }
@@ -222,7 +220,7 @@ class UsersControllerTest extends ApplicationTestCase
     /**
      * Test PUT /antares/users/(:any) when invalid user id is given.
      *
-     * @test
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPutUpdateActionGivenInvalidUserId()
     {
@@ -241,7 +239,7 @@ class UsersControllerTest extends ApplicationTestCase
     /**
      * Test PUT /antares/users/(:any) when database error.
      *
-     * @test
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPutUpdateActionGivenDatabaseError()
     {
@@ -347,7 +345,7 @@ class UsersControllerTest extends ApplicationTestCase
 
         $auth->shouldReceive('user')->once()->andReturn($user);
         DB::beginTransaction();
-        $this->call('GET', 'antares/users/2/delete');
+        $this->call('GET', 'antares/users/1/delete');
         DB::rollback();
         $this->assertRedirectedTo('users/index');
     }
@@ -387,18 +385,19 @@ class UsersControllerTest extends ApplicationTestCase
         $builder->shouldReceive('findOrFail')->once()->with('foobar')->andReturn($user);
         $user->shouldReceive('getAttribute')->once()->with('id')->andReturn('foobar');
         DB::beginTransaction();
-        $this->call('GET', 'antares/users/2/delete');
+        $this->call('GET', 'antares/users/10/delete');
         DB::rollback();
 
         $this->assertRedirectedTo('users/index');
     }
 
     /**
-     * Test GET /antares/users/(:any)/delete when database error.
+     * Test GET /antares/users/(:any)/delete when not exists user.
+     * 
+     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
      *
-     * @test
      */
-    public function testGetDeleteActionGivenDatabaseError()
+    public function testGetDeleteActionWhenNotExistsUser()
     {
         $builder = m::mock('\Illuminate\Database\Eloquent\Builder')->makePartial();
         $user    = m::mock('\Antares\Model\User');
@@ -413,7 +412,12 @@ class UsersControllerTest extends ApplicationTestCase
                 ->with(m::type('Closure'))->andReturnUsing(function ($c) {
             $c();
         });
-        $this->assertInstanceOf(ModelNotFoundException::class, $this->call('GET', 'antares/users/999/delete')->exception);
+
+        $this->app[\Illuminate\Contracts\Auth\Factory::class] = $auth                                                 = m::mock(\Illuminate\Contracts\Auth\Factory::class);
+        $auth->shouldReceive('guest')->times(3)->andReturn(false);
+        $auth->shouldReceive('user')->once()->andReturn(\Antares\Model\User::query()->whereId(1)->first());
+
+        $this->call('GET', 'antares/users/999/delete');
     }
 
 }

@@ -84,7 +84,7 @@ class PasswordUpdaterControllerTest extends ApplicationTestCase
     /**
      * Test POST /admin/account with invalid user id.
      *
-     * @test
+     * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testPostIndexActionGivenInvalidUserId()
     {
@@ -95,6 +95,7 @@ class PasswordUpdaterControllerTest extends ApplicationTestCase
                 ->andReturnUsing(function ($listener) {
                     return $listener->abortWhenUserMismatched();
                 });
+
 
         $this->call('POST', 'antares/account/password', $input);
         $this->assertResponseStatus(500);
