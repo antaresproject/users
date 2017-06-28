@@ -214,7 +214,7 @@ class Users extends DataTable
     protected function statuses()
     {
 
-        $statuses = User::select([DB::raw('count(id) as counter'), 'status'])->clients()->groupBy('status')->get()->pluck('counter', 'status')->toArray();
+        $statuses = User::select([DB::raw('count(id) as counter'), 'status'])->members()->groupBy('status')->get()->pluck('counter', 'status')->toArray();
         return ['all' => trans('antares/users::messages.statuses.all'),
             0     => trans('antares/users::messages.statuses.archived', ['count' => array_get($statuses, 0, 0)]),
             1     => trans('antares/users::messages.statuses.active', ['count' => array_get($statuses, 1, 0)])
