@@ -63,49 +63,67 @@ class User extends FormBuilder implements Presenter
     }
 
     /**
-     * form fieldset
+     * Form fieldset
      * 
      * @return Fieldset
      */
     protected function fieldset()
     {
-
         return $this->grid->fieldset('user-fieldset', function (Fieldset $fieldset) {
                     $fieldset->legend(trans('antares/users::messages.fieldsets.user_details'));
-                    $fieldset->control('input:text', 'email')
-                            ->label(trans('antares/foundation::label.users.email'))
-                            ->wrapper(['class' => 'w250'])
-                            ->help('E-mail address which will be used to login.');
 
-                    $fieldset->control('input:text', 'firstname')
-                            ->label(trans('antares/foundation::label.users.firstname'))
-                            ->wrapper(['class' => 'w250'])
-                            ->help('Firstname field is required.');
+                    $this->controls($fieldset);
 
-                    $fieldset->control('input:text', 'lastname')
-                            ->label(trans('antares/foundation::label.users.lastname'))
-                            ->wrapper(['class' => 'w250'])
-                            ->help('Lastname field is required.');
-                    ;
-
-
-
-                    $fieldset->control('input:password', 'password')
-                            ->label(trans('antares/foundation::label.users.password'))
-                            ->wrapper(['class' => 'w300'])
-                            ->help('Password should contain min. 5 characters.');
-
-                    $fieldset->control('button', 'cancel')
-                            ->field(function() {
-                                $previous = url()->previous();
-                                $url      = $previous == url()->current() ? handles('antares/foundation::/') : $previous;
-                                return app('html')->link($url, trans('antares/foundation::label.cancel'), ['class' => 'btn btn--md btn--default mdl-button mdl-js-button']);
-                            });
-
-                    $fieldset->control('button', 'button')
-                            ->attributes(['type' => 'submit', 'class' => 'btn btn--md btn--primary mdl-button mdl-js-button mdl-js-ripple-effect'])
-                            ->value(trans('antares/foundation::label.save_changes'));
+                    $this->buttons($fieldset);
                 });
+    }
+
+    /**
+     * Attaches controls to fieldset
+     * 
+     * @param Fieldset $fieldset
+     */
+    protected function controls($fieldset)
+    {
+        $fieldset->control('input:text', 'email')
+                ->label(trans('antares/foundation::label.users.email'))
+                ->wrapper(['class' => 'w250'])
+                ->help('E-mail address which will be used to login.');
+
+        $fieldset->control('input:text', 'firstname')
+                ->label(trans('antares/foundation::label.users.firstname'))
+                ->wrapper(['class' => 'w250'])
+                ->help('Firstname field is required.');
+
+        $fieldset->control('input:text', 'lastname')
+                ->label(trans('antares/foundation::label.users.lastname'))
+                ->wrapper(['class' => 'w250'])
+                ->help('Lastname field is required.');
+
+
+        $fieldset->control('input:password', 'password')
+                ->label(trans('antares/foundation::label.users.password'))
+                ->wrapper(['class' => 'w300'])
+                ->help('Password should contain min. 5 characters.');
+    }
+
+    /**
+     * Assignes buttons to fieldsets
+     * 
+     * @param Fieldset $fieldset
+     */
+    protected function buttons($fieldset)
+    {
+        $fieldset->control('button', 'cancel')
+                ->field(function() {
+                    $previous = url()->previous();
+                    $url      = $previous == url()->current() ? handles('antares/foundation::/') : $previous;
+                    return app('html')->link($url, trans('antares/foundation::label.cancel'), ['class' => 'btn btn--md btn--default mdl-button mdl-js-button']);
+                });
+
+        $fieldset->control('button', 'button')
+                ->attributes(['type' => 'submit', 'class' => 'btn btn--md btn--primary mdl-button mdl-js-button mdl-js-ripple-effect'])
+                ->value(trans('antares/foundation::label.save_changes'));
     }
 
 }
