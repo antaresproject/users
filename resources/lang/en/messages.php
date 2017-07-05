@@ -49,5 +49,6 @@ return [
     'breadcrumbs'       => [
         'edit' => 'Edit: :name',
         'add'  => 'Add user'
-    ]
+    ],
+    'confirm_password'  => 'Confirm password'
 ];

@@ -105,6 +105,11 @@ class User extends FormBuilder implements Presenter
                 ->label(trans('antares/foundation::label.users.password'))
                 ->wrapper(['class' => 'w300'])
                 ->help('Password should contain min. 5 characters.');
+
+        $fieldset->control('input:password', 'confirm_password')
+                ->label(trans('antares/users::messages.confirm_password'))
+                ->wrapper(['class' => 'w300'])
+                ->help('Password should same as value in password field.');
     }
 
     /**

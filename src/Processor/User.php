@@ -251,6 +251,7 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
         DB::beginTransaction();
 
         try {
+
             $roles = ($user->exists) ? $user->roles->pluck('id')->toArray() : Role::members()->get()->pluck('id')->toArray();
             $user->save();
             $user->roles()->sync($roles);
