@@ -22,7 +22,6 @@ namespace Antares\Users\Http\Middleware;
 
 use Closure;
 use Antares\Contracts\Auth\Guard;
-use Illuminate\Http\RedirectResponse;
 use Antares\Contracts\Authorization\Authorization;
 
 class LoginAs

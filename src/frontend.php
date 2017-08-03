@@ -17,8 +17,6 @@
  * @copyright  (c) 2017, Antares
  * @link       http://antaresproject.io
  */
-
-
 use Illuminate\Routing\Router;
 
 if (config('users.allow_registration', true)) {
