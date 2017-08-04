@@ -3,14 +3,27 @@
 namespace Antares\Users\Notifications;
 
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 
-class InvoicePaid extends Notification implements ShouldQueue
+class InvoicePaid extends Notification
 {
 
     use Queueable;
+
+    /**
+     * Notification severity
+     *
+     * @var String
+     */
+    public $severity = 'high';
+
+    /**
+     * Notification category
+     *
+     * @var String
+     */
+    public $category = 'default';
 
     /**
      * Get the notification's delivery channels.
@@ -33,7 +46,7 @@ class InvoicePaid extends Notification implements ShouldQueue
     {
         return (new MailMessage)
                         ->subject('Notification Subject')
-                        ->view('antares/users::notification.test_message');
+                        ->view('antares/foundation::users.notification.test_message', ['application_name' => 'Antares']);
     }
 
 }
