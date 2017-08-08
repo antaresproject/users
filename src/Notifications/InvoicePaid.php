@@ -2,11 +2,14 @@
 
 namespace Antares\Users\Notifications;
 
+use Antares\Notifications\Messages\NotificationMessage;
 use Antares\Notifications\Messages\MailMessage;
+use Antares\Notifications\Messages\SmsMessage;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 
-class InvoicePaid extends Notification
+class InvoicePaid extends Notification implements ShouldQueue
 {
 
     use Queueable;
@@ -19,7 +22,7 @@ class InvoicePaid extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return [\Antares\Notifications\Channels\MailChannel::class];
     }
 
     /**
@@ -38,18 +41,51 @@ class InvoicePaid extends Notification
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Get the sms representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return \Illuminate\Notifications\Messages\SmsMessage
      */
-    public function toMail($notifiable)
+    public function toSms($notifiable)
     {
-        return (new MailMessage)
+        return (new SmsMessage)
                         ->severity('high')
                         ->category('default')
+                        ->subject('This is a sample sms message')
+                        ->content('Your SMS message content')
+                        ->from('15554443333');
+    }
+
+    /**
+     * Get the alert representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\AlertMessage
+     */
+    public function toAlert($notifiable)
+    {
+        return (new NotificationMessage)
+                        ->severity('high')
+                        ->category('default')
+                        ->type(['admin', 'reseller'])
                         ->subject('antares/users::notifications.invoice_paid_subject', ['username' => $notifiable->fullname])
-                        ->view('antares/foundation::users.notification.test_message');
+                        ->view('antares/foundation::users.notification.test_alert_message');
+    }
+
+    /**
+     * Get the alert representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\AlertMessage
+     */
+    public function toNotification($notifiable)
+    {
+        return (new NotificationMessage)
+                        ->severity('medium')
+                        ->category('default')
+                        ->type(['admin', 'reseller'])
+                        ->subject('antares/users::notifications.invoice_paid_subject', ['username' => $notifiable->fullname])
+                        ->view('antares/foundation::users.notification.test_alert_message');
     }
 
 }
