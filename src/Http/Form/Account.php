@@ -50,22 +50,26 @@ class Account extends Grid
             $fieldset->control('input:text', 'email')
                     ->label(trans('antares/foundation::label.users.email'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w250']);
+                    ->wrapper(['class' => 'w250'])
+                    ->help('E-mail address which will be used to first login.');
 
             $fieldset->control('input:text', 'firstname')
                     ->label(trans('antares/foundation::label.users.firstname'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w270']);
+                    ->wrapper(['class' => 'w270'])
+                    ->help('Firstname field is required.');
 
             $fieldset->control('input:text', 'lastname')
                     ->label(trans('antares/foundation::label.users.lastname'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w270']);
+                    ->wrapper(['class' => 'w270'])
+                    ->help('Lastname field is required.');
 
             $fieldset->control('input:password', 'password')
                     ->label(trans('antares/foundation::label.users.password'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w300']);
+                    ->wrapper(['class' => 'w300'])
+                    ->help('Password should contain min. 5 characters.');
 
             $fieldset->control('input:password', 'password_confirmation')
                     ->label(trans('antares/foundation::label.users.password_retype'))
