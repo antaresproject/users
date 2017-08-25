@@ -56,6 +56,7 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
+        parent::register();
         $this->registerThrottlesLogins();
         $this->app->singleton(Avatar::class, function ($app) {
             return new Avatar();
@@ -102,6 +103,7 @@ class UsersServiceProvider extends ModuleServiceProvider
         MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
         $this->attachMenu([UserViewBreadcrumbMenu::class]);
         $this->registerUsersActivity($router);
+        $this->bootApiRouting($router);
     }
 
     /**
