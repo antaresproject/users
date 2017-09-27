@@ -38,8 +38,6 @@ Foundation::namespaced('Antares\Users\Http\Controllers', function (Router $route
 Route::group(['middleware' => ['web']], function () use($router) {
     $router->get('antares/login/with/{id}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@login');
     $router->get('antares/logout/with/{key}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
-
     $router->get('login/with/{id}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@login');
     $router->get('logout/with/{key}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
 });
-

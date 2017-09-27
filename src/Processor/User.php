@@ -142,9 +142,11 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
         } catch (Exception $e) {
             Log::emergency($e);
             DB::rollback();
+            event('notification.user_has_not_been_created', ['variables' => ['user' => $user]]);
             return $listener->createUserFailed(['error' => $e->getMessage()]);
         }
         DB::commit();
+        event('notification.user_has_been_created', ['variables' => ['user' => $user]]);
 
         return $listener->userCreated();
     }
@@ -159,7 +161,6 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
      */
     public function update(UserUpdaterListener $listener, $id, array $input)
     {
-
         if ((string) $id !== array_get($input, 'id') && !request()->wantsJson()) {
             return $listener->abortWhenUserMismatched();
         }
@@ -175,9 +176,11 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
             $this->saving($user, $input, 'update');
         } catch (Exception $e) {
             Log::emergency($e);
+
             event('notification.user_has_not_been_updated', ['variables' => ['user' => $user]]);
             return $listener->updateUserFailed(['error' => $e->getMessage()]);
         }
+
         event('notification.user_has_been_updated', ['variables' => ['user' => $user]]);
         return $listener->userUpdated();
     }
@@ -200,8 +203,11 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
                     $this->fireEvent('deleting', [$user]);
                     $user->delete();
                     $this->fireEvent('deleted', [$user]);
+                    event('notification.user_has_been_deleted', ['variables' => ['user' => $user]]);
                 }
             });
+
+
             return $listener->usersDeleted();
         }
 
@@ -216,8 +222,10 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
                 $user->delete();
             });
             $this->fireEvent('deleted', [$user]);
+            event('notification.user_has_been_deleted', ['variables' => ['user' => $user]]);
         } catch (Exception $e) {
             Log::emergency($e);
+            event('notification.user_has_not_been_deleted', ['variables' => ['user' => $user]]);
             return $listener->userDeletionFailed(['error' => $e->getMessage()]);
         }
 

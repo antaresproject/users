@@ -17,7 +17,10 @@
  * @copyright  (c) 2017, Antares
  * @link       http://antaresproject.io
  */
+
 use Illuminate\Routing\Router;
+
+/* @var $router Router */
 
 $router->group(['prefix' => 'account'], function (Router $router) {
     $router->get('/', 'Account\ProfileUpdaterController@edit');
