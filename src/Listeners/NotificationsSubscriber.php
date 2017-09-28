@@ -21,33 +21,49 @@ class NotificationsSubscriber
     protected $admins;
 
     /**
-     * NotificationsSubscriber constructor.
+     * @return User[]
      */
-    public function __construct() {
-        $this->admins = User::administrators()->get();
+    protected function fetchRecipients() {
+        if($this->admins === null) {
+            $this->admins = User::administrators()->get();
+        }
+
+        return $this->admins;
     }
 
     public function hasBeenCreated(array $data) {
+        $this->fetchRecipients();
+
         Notification::send($this->admins, new UserHasBeenCreated($data['user']));
     }
 
     public function hasNotBeenCreated(array $data) {
+        $this->fetchRecipients();
+
         Notification::send($this->admins, new UserHasNotBeenCreated($data['user']));
     }
 
     public function hasBeenUpdated(array $data) {
+        $this->fetchRecipients();
+
         Notification::send($this->admins, new UserHasBeenUpdated($data['user']));
     }
 
     public function hasNotBeenUpdated(array $data) {
+        $this->fetchRecipients();
+
         Notification::send($this->admins, new UserHasNotBeenUpdated($data['user']));
     }
 
     public function hasBeenDeleted(array $data) {
+        $this->fetchRecipients();
+
         Notification::send($this->admins, new UserHasBeenDeleted($data['user']));
     }
 
     public function hasNotBeenDeleted(array $data) {
+        $this->fetchRecipients();
+
         Notification::send($this->admins, new UserHasNotBeenDeleted($data['user']));
     }
 

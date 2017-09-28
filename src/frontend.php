@@ -31,11 +31,24 @@ Foundation::namespaced('Antares\Users\Http\Controllers', function (Router $route
         $router->match(['GET', 'POST'], 'reset/{token}', 'Account\PasswordBrokerController@show');
         $router->post('reset', 'Account\PasswordBrokerController@update');
     });
+
+    $router->group(['prefix' => 'account'], function (Router $router) {
+        $router->get('/', 'Account\ProfileUpdaterController@edit');
+        $router->post('/', 'Account\ProfileUpdaterController@update');
+        $router->get('password', 'Account\PasswordUpdaterController@edit');
+        $router->post('password', 'Account\PasswordUpdaterController@update');
+        $router->post('picture', 'UsersController@picture');
+        $router->get('gravatar', 'UsersController@gravatar');
+    });
+
+
     $router->get('login', ['as' => 'login', 'uses' => 'CredentialController@index']);
     $router->post('login', 'CredentialController@login');
     $router->match(['GET', 'HEAD', 'DELETE'], 'logout', 'CredentialController@logout');
 });
+
 Route::group(['middleware' => ['web']], function () use($router) {
+
     $router->get('antares/login/with/{id}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@login');
     $router->get('antares/logout/with/{key}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
     $router->get('login/with/{id}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@login');

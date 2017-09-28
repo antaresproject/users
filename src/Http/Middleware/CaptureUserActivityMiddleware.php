@@ -49,7 +49,8 @@ class CaptureUserActivityMiddleware
     public function handle(Request $request, Closure $next)
     {
         if ($request->has('userActivity')) {
-            $this->processor->updateActivity(auth()->user());
+            $this->processor->updateActivity( $request->user() );
+
             exit();
         }
 
