@@ -90,6 +90,7 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+
         $router = $this->app->make(Router::class);
         $path   = __DIR__ . '/../';
         $this->addConfigComponent($this->routeGroup, $this->routeGroup, "{$path}/resources/config");

@@ -29,6 +29,7 @@ $router->group(['prefix' => 'account'], function (Router $router) {
 });
 
 
+
 $router->match(['GET', 'POST'], 'users/index', 'UsersController@index');
 $router->get('users/elements', 'UsersController@elements');
 $router->post('users/delete', 'UsersController@delete');
@@ -39,3 +40,7 @@ $router->resource('users', 'UsersController');
 
 $router->get('login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');
 $router->get('logout/with/{key}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
+
+
+
+

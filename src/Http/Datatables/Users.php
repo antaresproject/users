@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -104,51 +104,53 @@ class Users extends DataTable
         $canUpdateUser = $acl->can('user-update');
         $canDeleteUser = $acl->can('user-delete');
 
-        $return = $this->prepare()
-                ->filterColumn('firstname', function ($query, $keyword) {
-                    $query->where('firstname', 'like', "%$keyword%");
-                })
-                ->filterColumn('lastname', function ($query, $keyword) {
-                    $query->where('lastname', 'like', "%$keyword%");
-                })
-                ->filterColumn('email', function ($query, $keyword) {
-                    $query->where('email', 'like', "%$keyword%");
-                })
-                ->filterColumn('status', function ($query, $keyword) {
-                    $value = null;
-                    switch ($keyword) {
-                        case 'archived':
-                            $value = 0;
-                            break;
-                        case 'active':
-                            $value = 1;
-                            break;
-                        default:
-                            if (is_numeric($keyword) && $keyword <= 1) {
-                                $value = $keyword;
+        return $this->prepare()
+                        ->filterColumn('firstname', function ($query, $keyword) {
+                            $query->where('firstname', 'like', "%$keyword%");
+                        })
+                        ->filterColumn('lastname', function ($query, $keyword) {
+                            $query->where('lastname', 'like', "%$keyword%");
+                        })
+                        ->filterColumn('email', function ($query, $keyword) {
+                            $query->where('email', 'like', "%$keyword%");
+                        })
+                        ->filterColumn('status', function ($query, $keyword) {
+                            $value = null;
+                            switch ($keyword) {
+                                case 'archived':
+                                    $value = 0;
+                                    break;
+                                case 'active':
+                                    $value = 1;
+                                    break;
+                                default:
+                                    if (is_numeric($keyword) && $keyword <= 1) {
+                                        $value = $keyword;
+                                    }
+                                    break;
                             }
-                            break;
-                    }
-                    if (!is_null($value)) {
-                        $query->where('status', '=', $value);
-                    }
-                })
-                ->editColumn('firstname', function ($row = null) {
-                    return ($row->firstname) ? $row->firstname : '---';
-                })
-                ->editColumn('lastname', function ($row = null) {
-                    return ($row->lastname) ? $row->lastname : '---';
-                })
-                ->editColumn('email', $this->getUserEmail($query = null))
-                ->editColumn('created_at', function ($model) {
-                    return format_x_days($model->created_at);
-                })
-                ->editColumn('status', function ($model) {
-                    return ((int) $model->status) ? '<span class="label-basic label-basic--success">ACTIVE</span>' : '<span class="label-basic label-basic--danger">Archived</span>';
-                })
-                ->addColumn('action', $this->getActionsColumn($canUpdateUser, $canDeleteUser))
-                ->make(true);
-        return $return;
+                            if (!is_null($value)) {
+                                $query->where('status', '=', $value);
+                            }
+                        })
+                        ->editColumn('reorder', function ($row = null) {
+                            return '<i class="zmdi zmdi-arrows zmdi-hc-2x"></i>';
+                        })
+                        ->editColumn('firstname', function ($row = null) {
+                            return ($row->firstname) ? $row->firstname : '---';
+                        })
+                        ->editColumn('lastname', function ($row = null) {
+                            return ($row->lastname) ? $row->lastname : '---';
+                        })
+                        ->editColumn('email', $this->getUserEmail($query = null))
+                        ->editColumn('created_at', function ($model) {
+                            return format_x_days($model->created_at);
+                        })
+                        ->editColumn('status', function ($model) {
+                            return ((int) $model->status) ? '<span class="label-basic label-basic--success">ACTIVE</span>' : '<span class="label-basic label-basic--danger">Archived</span>';
+                        })
+                        ->addColumn('action', $this->getActionsColumn($canUpdateUser, $canDeleteUser))
+                        ->make(true);
     }
 
     /**
@@ -156,7 +158,6 @@ class Users extends DataTable
      */
     public function html()
     {
-        view()->share('content_class', 'side-menu');
         $html = app('html');
 
         return $this->setName('Users List')
@@ -190,18 +191,18 @@ class Users extends DataTable
                             'title' => trans('antares/foundation::label.users.status'),
                         ])
                         ->addAction([
-                            'name'       => 'edit',
+                            'name'       => 'action',
                             'title'      => '',
                             'class'      => 'mass-actions dt-actions',
                             'orderable'  => false,
                             'searchable' => false,
+                            'filterable' => false,
                         ])
                         ->addMassAction('delete', $html->link(handles('antares/foundation::users/delete', ['csrf' => true]), $html->raw('<i class="zmdi zmdi-delete"></i><span>' . trans('Delete') . '</span>'), [
                                     'class'            => "triggerable confirm mass-action",
                                     'data-title'       => trans("Are you sure?"),
                                     'data-description' => trans('Deleting users'),
                         ]))
-                        ->setDeferedData()
                         ->addGroupSelect($this->statuses(), 5, 1)
                         ->ajax(handles('antares/foundation::/users/index'));
     }
