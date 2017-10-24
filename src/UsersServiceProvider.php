@@ -28,6 +28,7 @@ use Antares\Contracts\Auth\Command\ThrottlesLogins;
 use Antares\Users\Auth\BasicThrottle;
 use Antares\Foundation\MenuComposer;
 use Antares\Users\Http\Middleware\CaptureUserActivityMiddleware;
+use Antares\Users\Listeners\NotificationsSubscriber;
 use Antares\Users\Memory\Avatar;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Event;
@@ -50,16 +51,27 @@ class UsersServiceProvider extends ModuleServiceProvider
     protected $routeGroup = 'antares/users';
 
     /**
+     * @var array
+     */
+    protected $subscribe = [
+        NotificationsSubscriber::class,
+    ];
+
+    /**
      * Register the service provider.
      *
      * @return void
      */
     public function register()
     {
+        parent::register();
+
         $this->registerThrottlesLogins();
         $this->app->singleton(Avatar::class, function ($app) {
             return new Avatar();
         });
+
+
     }
 
     /**
@@ -90,16 +102,14 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+        parent::boot();
 
         $router = $this->app->make(Router::class);
-        $path   = __DIR__ . '/../';
-        $this->addConfigComponent($this->routeGroup, $this->routeGroup, "{$path}/resources/config");
-        $this->addLanguageComponent($this->routeGroup, $this->routeGroup, "{$path}/resources/lang");
+
         if (!$this->app->routesAreCached()) {
-            require "frontend.php";
+            require __DIR__ . "/frontend.php";
         }
-        $path = __DIR__;
-        $this->loadBackendRoutesFrom("{$path}/backend.php");
+
         MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
         $this->attachMenu([UserViewBreadcrumbMenu::class]);
         $this->registerUsersActivity($router);
@@ -112,7 +122,7 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function provides()
     {
-        return [Avatar::class];
+        return [Avatar::class, NotificationsSubscriber::class];
     }
 
 }
