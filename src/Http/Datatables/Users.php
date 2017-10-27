@@ -21,6 +21,7 @@
 namespace Antares\Users\Http\Datatables;
 
 use Antares\Users\Http\Filter\UserCreatedAtFilter;
+use Antares\Users\Http\Filter\UserStatusFilter;
 use Antares\Datatables\Services\DataTable;
 use Antares\Support\Facades\Foundation;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +62,7 @@ class Users extends DataTable
      */
     protected $filters = [
         UserCreatedAtFilter::class,
+        UserStatusFilter::class
     ];
 
     /**
