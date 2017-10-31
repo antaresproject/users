@@ -18,7 +18,6 @@
  * @link       http://antaresproject.io
  */
 
-
 namespace Antares\Users\Http\Controllers\Account;
 
 use Illuminate\Support\Facades\Input;
