@@ -3,13 +3,12 @@
 namespace Antares\Users\Notifications;
 
 use Antares\Model\User;
-use Antares\Notifications\Collections\TemplatesCollection;
+use Antares\Notifications\AbstractNotification;
 use Antares\Notifications\Contracts\NotificationEditable;
 use Antares\Notifications\Messages\NotificationMessage;
 use Antares\Notifications\Model\Template;
-use Illuminate\Notifications\Notification;
 
-abstract class AbstractUserNotification extends Notification implements NotificationEditable {
+abstract class AbstractUserNotification extends AbstractNotification implements NotificationEditable {
 
     /**
      * @var User
@@ -27,25 +26,6 @@ abstract class AbstractUserNotification extends Notification implements Notifica
      */
     public function __construct(User $user) {
         $this->user = $user;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function via($notifiable)
-    {
-        return $notifiable->isAny(['reseller', 'admin', 'super-administrator']) ? ['notification'] : [];
-    }
-
-    /**
-     * @return TemplatesCollection
-     */
-    public static function templates() : TemplatesCollection {
-        return TemplatesCollection::make()
-            ->define('notification', static::notificationMessage());
     }
 
     /**
