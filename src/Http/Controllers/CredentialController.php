@@ -54,6 +54,9 @@ class CredentialController extends AdminController implements AuthenticateListen
      */
     public function index()
     {
+        if (!app('antares.installed')) {
+            return redirect(handles('antares::install'));
+        }
         $select = User::select(['email'])->whereHas('roles', function($query) {
             $query->where('name', area());
         });

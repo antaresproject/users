@@ -206,7 +206,14 @@ class Users extends DataTable
                                     'data-description' => trans('Deleting users'),
                         ]))
                         ->addGroupSelect($this->statuses(), 5, 1)
-                        ->ajax(handles('antares/foundation::/users/index'));
+                        ->ajax(handles('antares/foundation::/users/index'))
+                        ->parameters([
+                            'order'        => [[0, 'desc']],
+                            'aoColumnDefs' => [
+                                ['width' => '5%', 'targets' => 0],
+                                ['width' => '10%', 'targets' => 6],
+                            ]
+        ]);
     }
 
     /**
