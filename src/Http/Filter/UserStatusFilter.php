@@ -45,7 +45,7 @@ class UserStatusFilter extends SelectFilter implements DataTableScopeContract
      *
      * @var String
      */
-    protected $pattern = '%value';
+    protected $pattern = '<span class="filter-label">Status:</span> %value';
 
     /**
      * filter instance dataprovider
