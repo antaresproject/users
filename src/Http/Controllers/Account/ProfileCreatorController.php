@@ -18,14 +18,13 @@
  * @link       http://antaresproject.io
  */
 
-
 namespace Antares\Users\Http\Controllers\Account;
 
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Redirect;
-use Antares\Foundation\Http\Controllers\AdminController;
-use Antares\Users\Processor\Account\ProfileCreator as Processor;
 use Antares\Contracts\Foundation\Listener\Account\ProfileCreator as Listener;
+use Antares\Users\Processor\Account\ProfileCreator as Processor;
+use Antares\Foundation\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Input;
 
 class ProfileCreatorController extends AdminController implements Listener
 {

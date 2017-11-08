@@ -80,7 +80,7 @@ class Account extends Grid
             $control = $fieldset->control('button', 'button')
                     ->attributes([
                 'type'  => 'submit',
-                'class' => 'btn btn--submit btn--primary btn--primary mdl-button mdl-js-button mdl-js-ripple-effect'
+                'class' => 'btn btn--submit btn--primary mdl-button mdl-js-button mdl-js-ripple-effect'
             ]);
 
             (!auth()->guest()) ? $control->value(trans('antares/foundation::label.save_changes')) : $control->value(trans('antares/foundation::label.users.register'));
