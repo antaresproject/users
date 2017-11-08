@@ -21,6 +21,16 @@
 namespace Antares\Users;
 
 use Antares\Foundation\Support\Providers\ModuleServiceProvider;
+use Antares\Model\User;
+use Antares\Notifications\Model\NotifiableEvent;
+use Antares\Notifications\Model\Recipient;
+use Antares\Notifications\Services\EventsRegistrarService;
+use Antares\Users\Events\UserCreated;
+use Antares\Users\Events\UserDeleted;
+use Antares\Users\Events\UserNotCreated;
+use Antares\Users\Events\UserNotDeleted;
+use Antares\Users\Events\UserNotUpdated;
+use Antares\Users\Events\UserUpdated;
 use Antares\Users\Http\Handlers\UsersActivityPlaceholder;
 use Antares\Users\Http\Handlers\UserViewBreadcrumbMenu;
 use Antares\Users\Http\Handlers\UsersBreadcrumbMenu;
@@ -51,13 +61,6 @@ class UsersServiceProvider extends ModuleServiceProvider
     protected $routeGroup = 'antares/users';
 
     /**
-     * @var array
-     */
-    protected $subscribe = [
-        NotificationsSubscriber::class,
-    ];
-
-    /**
      * Register the service provider.
      *
      * @return void
@@ -67,7 +70,7 @@ class UsersServiceProvider extends ModuleServiceProvider
         parent::register();
 
         $this->registerThrottlesLogins();
-        $this->app->singleton(Avatar::class, function ($app) {
+        $this->app->singleton(Avatar::class, function () {
             return new Avatar();
         });
 
@@ -113,6 +116,24 @@ class UsersServiceProvider extends ModuleServiceProvider
         MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
         $this->attachMenu([UserViewBreadcrumbMenu::class]);
         $this->registerUsersActivity($router);
+
+        $this->setupNotifications();
+    }
+
+    protected function setupNotifications() {
+        /* @var $eventRegistrarClass EventsRegistrarService */
+        $eventRegistrarClass = app()->make(EventsRegistrarService::class);
+
+        $admins = new Recipient('admins', 'Administrators', function() {
+            return User::administrators()->get();
+        });
+
+        $eventRegistrarClass->register( (new NotifiableEvent(UserCreated::class, 'When user is created'))->addRecipient($admins) );
+        $eventRegistrarClass->register( (new NotifiableEvent(UserUpdated::class, 'When user is updated'))->addRecipient($admins) );
+        $eventRegistrarClass->register( (new NotifiableEvent(UserDeleted::class, 'When user is deleted'))->addRecipient($admins) );
+        $eventRegistrarClass->register( (new NotifiableEvent(UserNotCreated::class, 'When user not created'))->addRecipient($admins) );
+        $eventRegistrarClass->register( (new NotifiableEvent(UserNotUpdated::class, 'When user not updated'))->addRecipient($admins) );
+        $eventRegistrarClass->register( (new NotifiableEvent(UserNotDeleted::class, 'When user not deleted'))->addRecipient($admins) );
     }
 
     /**
