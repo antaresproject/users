@@ -52,10 +52,9 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
     use ControllerResponseTrait;
 
     /**
-     * Create a new processor instance.
-     *
-     * @param  \Antares\Users\Http\Presenters\User  $presenter
-     * @param  \Antares\Users\Validation\User  $validator
+     * User constructor.
+     * @param Presenter $presenter
+     * @param Validator $validator
      */
     public function __construct(Presenter $presenter, Validator $validator)
     {
