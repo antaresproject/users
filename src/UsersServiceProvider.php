@@ -116,7 +116,9 @@ class UsersServiceProvider extends ModuleServiceProvider
         MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
         $this->attachMenu([UserViewBreadcrumbMenu::class]);
         $this->registerUsersActivity($router);
+    }
 
+    public function booted() {
         $this->setupNotifications();
     }
 
