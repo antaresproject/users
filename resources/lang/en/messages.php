@@ -47,7 +47,7 @@ return [
         ]
     ],
     'breadcrumbs'       => [
-        'edit' => 'Edit: :name',
+        'edit' => 'Edit: #:id, :name',
         'add'  => 'Add user'
     ],
     'confirm_password'  => 'Confirm password'

@@ -79,7 +79,7 @@ class Breadcrumb
         } else {
             Breadcrumbs::register('user-action', function($breadcrumbs) use($model) {
                 $breadcrumbs->parent('users');
-                $breadcrumbs->push(trans('antares/users::messages.breadcrumbs.edit', ['name' => $model->fullname]));
+                $breadcrumbs->push(trans('antares/users::messages.breadcrumbs.edit', ['id' => $model->id, 'name' => $model->fullname]));
             });
         }
         view()->share('breadcrumbs', Breadcrumbs::render('user-action'));
