@@ -113,9 +113,7 @@ class AuthenticateUser extends Authenticate implements Command
     protected function handleUserWasAuthenticated(Listener $listener, array $input, ThrottlesCommand $throttles = null)
     {
 
-        if ($throttles) {
-            //$throttles->clearLoginAttempts($input);
-        }
+
         $redirect = ($this->acl->make('antares')->can('show-dashboard')) ? handles('antares::/') : handles('client');
 
         auth()->guard('web')->getSession()->remove('auth');

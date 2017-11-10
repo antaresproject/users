@@ -132,7 +132,7 @@ class CredentialController extends AdminController implements AuthenticateListen
     public function userHasLoggedIn(Authenticatable $user, $redirect)
     {
         messages('success', trans('antares/foundation::response.credential.logged-in'));
-        return Redirect::intended($redirect);
+        return redirect($redirect);
     }
 
     /**
