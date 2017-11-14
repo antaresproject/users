@@ -23,6 +23,7 @@ namespace Antares\Users;
 use Antares\Foundation\Support\Providers\ModuleServiceProvider;
 use Antares\Model\User;
 use Antares\Notifications\Helpers\NotificationsEventHelper;
+use Antares\Users\Events\AbstractUserEvent;
 use Antares\Users\Events\UserCreated;
 use Antares\Users\Events\UserDeleted;
 use Antares\Users\Events\UserNotCreated;
@@ -125,15 +126,22 @@ class UsersServiceProvider extends ModuleServiceProvider
             return User::administrators()->get();
         };
 
+        $clientRecipient = function(AbstractUserEvent $event) {
+            return $event->user;
+        };
+
         NotificationsEventHelper::make()
             ->event(UserCreated::class, 'Users', 'When user is created')
                 ->addAdminRecipient($adminRecipient)
+                ->addClientRecipient($clientRecipient)
                 ->register()
             ->event(UserUpdated::class, 'Users', 'When user is updated')
                 ->addAdminRecipient($adminRecipient)
+                ->addClientRecipient($clientRecipient)
                 ->register()
             ->event(UserDeleted::class, 'Users', 'When user is deleted')
                 ->addAdminRecipient($adminRecipient)
+                ->addClientRecipient($clientRecipient)
                 ->register()
             ->event(UserNotCreated::class, 'Users', 'When user not created')
                 ->addAdminRecipient($adminRecipient)
