@@ -31,7 +31,7 @@ return [
         'archived' => 'Archived (:count)'
     ],
     'created_at'        => 'Created at',
-    'created_at_filter' => 'Created at (:start - :end)',
+    'created_at_filter' => '<span class="filter-label">Created at:</span> (:start - :end)',
     'dependable'        => [
         'activate_title'              => 'Activate',
         'deactivate_title'            => 'Deactivate',
