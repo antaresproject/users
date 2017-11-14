@@ -23,7 +23,7 @@ class UserHasBeenDeleted extends AbstractUserNotification {
         $subject    = 'User has been deleted';
         $view       = 'antares/users::notifications.system.user_deleted';
 
-        return (new Template(['notification'], $subject, $view))->setRecipients(['admins']);
+        return (new Template(['notification'], $subject, $view))->setRecipients(['admin']);
     }
 
 }

@@ -23,7 +23,7 @@ class UserHasNotBeenUpdated extends AbstractUserNotification {
         $subject    = 'User has not been updated';
         $view       = 'antares/users::notifications.system.user_not_updated';
 
-        return (new Template(['notification'], $subject, $view))->setSeverity('high')->setRecipients(['admins']);
+        return (new Template(['notification'], $subject, $view))->setSeverity('high')->setRecipients(['admin']);
     }
 
 }

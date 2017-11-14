@@ -22,9 +22,7 @@ namespace Antares\Users;
 
 use Antares\Foundation\Support\Providers\ModuleServiceProvider;
 use Antares\Model\User;
-use Antares\Notifications\Model\NotifiableEvent;
-use Antares\Notifications\Model\Recipient;
-use Antares\Notifications\Services\EventsRegistrarService;
+use Antares\Notifications\Helpers\NotificationsEventHelper;
 use Antares\Users\Events\UserCreated;
 use Antares\Users\Events\UserDeleted;
 use Antares\Users\Events\UserNotCreated;
@@ -123,19 +121,29 @@ class UsersServiceProvider extends ModuleServiceProvider
     }
 
     protected function setupNotifications() {
-        /* @var $eventRegistrarClass EventsRegistrarService */
-        $eventRegistrarClass = app()->make(EventsRegistrarService::class);
-
-        $admins = new Recipient('admins', 'Administrators', function() {
+        $adminRecipient = function() {
             return User::administrators()->get();
-        });
+        };
 
-        $eventRegistrarClass->register( (new NotifiableEvent(UserCreated::class, 'When user is created'))->addRecipient($admins) );
-        $eventRegistrarClass->register( (new NotifiableEvent(UserUpdated::class, 'When user is updated'))->addRecipient($admins) );
-        $eventRegistrarClass->register( (new NotifiableEvent(UserDeleted::class, 'When user is deleted'))->addRecipient($admins) );
-        $eventRegistrarClass->register( (new NotifiableEvent(UserNotCreated::class, 'When user not created'))->addRecipient($admins) );
-        $eventRegistrarClass->register( (new NotifiableEvent(UserNotUpdated::class, 'When user not updated'))->addRecipient($admins) );
-        $eventRegistrarClass->register( (new NotifiableEvent(UserNotDeleted::class, 'When user not deleted'))->addRecipient($admins) );
+        NotificationsEventHelper::make()
+            ->event(UserCreated::class, 'Users', 'When user is created')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+            ->event(UserUpdated::class, 'Users', 'When user is updated')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+            ->event(UserDeleted::class, 'Users', 'When user is deleted')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+            ->event(UserNotCreated::class, 'Users', 'When user not created')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+            ->event(UserNotUpdated::class, 'Users', 'When user is updated')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+            ->event(UserNotDeleted::class, 'Users', 'When user is deleted')
+                ->addAdminRecipient($adminRecipient)
+                ->register();
     }
 
     /**

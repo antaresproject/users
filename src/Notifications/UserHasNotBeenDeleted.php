@@ -23,7 +23,7 @@ class UserHasNotBeenDeleted extends AbstractUserNotification {
         $subject    = 'User has not been deleted';
         $view       = 'antares/users::notifications.system.user_not_deleted';
 
-        return (new Template(['notification'], $subject, $view))->setSeverity('high')->setRecipients(['admins']);
+        return (new Template(['notification'], $subject, $view))->setSeverity('high')->setRecipients(['admin']);
     }
 
 }

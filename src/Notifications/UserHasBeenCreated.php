@@ -23,7 +23,7 @@ class UserHasBeenCreated extends AbstractUserNotification {
         $subject    = 'User has been created';
         $view       = 'antares/users::notifications.system.user_created';
 
-        return (new Template(['notification'], $subject, $view))->setRecipients(['admins']);
+        return (new Template(['notification'], $subject, $view))->setRecipients(['admin']);
     }
 
 }

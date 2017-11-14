@@ -23,7 +23,7 @@ class UserHasNotBeenCreated extends AbstractUserNotification {
         $subject    = 'User has not been created';
         $view       = 'antares/users::notifications.system.user_not_created';
 
-        return (new Template(['notification'], $subject, $view))->setSeverity('high')->setRecipients(['admins']);
+        return (new Template(['notification'], $subject, $view))->setSeverity('high')->setRecipients(['admin']);
     }
 
 }

@@ -23,7 +23,7 @@ class UserHasBeenUpdated extends AbstractUserNotification {
         $subject    = 'User has been updated';
         $view       = 'antares/users::notifications.system.user_updated';
 
-        return (new Template(['notification'], $subject, $view))->setRecipients(['admins']);
+        return (new Template(['notification'], $subject, $view))->setRecipients(['admin']);
     }
 
 }
