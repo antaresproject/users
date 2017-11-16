@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * Part of the Antares package.
+ *
+ * NOTICE OF LICENSE
+ *
+ * Licensed under the 3-clause BSD License.
+ *
+ * This source file is subject to the 3-clause BSD License that is
+ * bundled with this package in the LICENSE file.
+ *
+ * @package    Antares Core
+ * @version    0.9.2
+ * @author     Antares Team
+ * @license    BSD License (3-clause)
+ * @copyright  (c) 2017, Antares
+ * @link       http://antaresproject.io
+ */
+
 namespace Antares\Users\Notifications;
 
 use Antares\Model\User;
@@ -11,14 +29,11 @@ use Antares\Notifications\Model\Template;
 abstract class AbstractUserNotification extends AbstractNotification implements NotificationEditable {
 
     /**
+     * User instance.
+     *
      * @var User
      */
     protected $user;
-
-    /**
-     * @var string
-     */
-    protected static $templateName = 'notification';
 
     /**
      * AbstractUserNotification constructor.
@@ -29,6 +44,8 @@ abstract class AbstractUserNotification extends AbstractNotification implements 
     }
 
     /**
+     * Returns template for notification.
+     *
      * @return Template
      */
     abstract protected static function notificationMessage();

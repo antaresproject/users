@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -117,10 +117,16 @@ class UsersServiceProvider extends ModuleServiceProvider
         $this->registerUsersActivity($router);
     }
 
+    /**
+     * Boot after all extensions booted.
+     */
     public function booted() {
         $this->setupNotifications();
     }
 
+    /**
+     * Setup notification for module.
+     */
     protected function setupNotifications() {
         $adminRecipient = function() {
             return User::administrators()->get();
