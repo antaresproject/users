@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.2
+ * @version    0.9.0
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -72,8 +72,6 @@ class UsersServiceProvider extends ModuleServiceProvider
         $this->app->singleton(Avatar::class, function () {
             return new Avatar();
         });
-
-
     }
 
     /**
@@ -104,30 +102,43 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+
         parent::boot();
+//
+//        $router = $this->app->make(Router::class);
+//
+//        if (!$this->app->routesAreCached()) {
+//            require __DIR__ . "/frontend.php";
+//        }
+//
+//        MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
+//        $this->attachMenu([UserViewBreadcrumbMenu::class]);
+//        $this->registerUsersActivity($router);
+    }
 
+    /**
+     * boot the service provider.
+     * 
+     * @return void
+     */
+    public function bootExtensionComponents()
+    {
         $router = $this->app->make(Router::class);
-
-        if (!$this->app->routesAreCached()) {
-            require __DIR__ . "/frontend.php";
-        }
-
         MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
         $this->attachMenu([UserViewBreadcrumbMenu::class]);
         $this->registerUsersActivity($router);
+
+        $this->loadBackendRoutesFrom(__DIR__ . "/backend.php");
+        $this->loadFrontendRoutesFrom(__DIR__ . "/frontend.php");
     }
 
-    /**
-     * Boot after all extensions booted.
-     */
-    public function booted() {
+    public function booted()
+    {
         $this->setupNotifications();
     }
 
-    /**
-     * Setup notification for module.
-     */
-    protected function setupNotifications() {
+    protected function setupNotifications()
+    {
         $adminRecipient = function() {
             return User::administrators()->get();
         };
@@ -137,25 +148,25 @@ class UsersServiceProvider extends ModuleServiceProvider
         };
 
         NotificationsEventHelper::make()
-            ->event(UserCreated::class, 'Users', 'When user is created')
+                ->event(UserCreated::class, 'Users', 'When user is created')
                 ->addAdminRecipient($adminRecipient)
                 ->addClientRecipient($clientRecipient)
                 ->register()
-            ->event(UserUpdated::class, 'Users', 'When user is updated')
+                ->event(UserUpdated::class, 'Users', 'When user is updated')
                 ->addAdminRecipient($adminRecipient)
                 ->addClientRecipient($clientRecipient)
                 ->register()
-            ->event(UserDeleted::class, 'Users', 'When user is deleted')
+                ->event(UserDeleted::class, 'Users', 'When user is deleted')
                 ->addAdminRecipient($adminRecipient)
                 ->addClientRecipient($clientRecipient)
                 ->register()
-            ->event(UserNotCreated::class, 'Users', 'When user not created')
+                ->event(UserNotCreated::class, 'Users', 'When user not created')
                 ->addAdminRecipient($adminRecipient)
                 ->register()
-            ->event(UserNotUpdated::class, 'Users', 'When user not updated')
+                ->event(UserNotUpdated::class, 'Users', 'When user is updated')
                 ->addAdminRecipient($adminRecipient)
                 ->register()
-            ->event(UserNotDeleted::class, 'Users', 'When user not deleted')
+                ->event(UserNotDeleted::class, 'Users', 'When user is deleted')
                 ->addAdminRecipient($adminRecipient)
                 ->register();
     }
