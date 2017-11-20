@@ -33,7 +33,7 @@ class UserHasNotBeenUpdated extends AbstractUserNotification {
      */
     public static function templates() : TemplatesCollection {
         return TemplatesCollection::make('User Not Updated', UserNotUpdated::class)
-            ->define('notification', static::notificationMessage());
+            ->define(static::notificationMessage());
     }
 
     /**

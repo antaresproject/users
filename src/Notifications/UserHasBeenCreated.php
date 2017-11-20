@@ -33,7 +33,7 @@ class UserHasBeenCreated extends AbstractUserNotification {
      */
     public static function templates() : TemplatesCollection {
         return TemplatesCollection::make('User Created', UserCreated::class)
-            ->define('notification', static::notificationMessage());
+            ->define(static::notificationMessage());
     }
 
     /**

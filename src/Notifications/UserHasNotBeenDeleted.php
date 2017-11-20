@@ -33,7 +33,7 @@ class UserHasNotBeenDeleted extends AbstractUserNotification {
      */
     public static function templates() : TemplatesCollection {
         return TemplatesCollection::make('User Not Deleted', UserNotDeleted::class)
-            ->define('notification', static::notificationMessage());
+            ->define(static::notificationMessage());
     }
 
     /**
