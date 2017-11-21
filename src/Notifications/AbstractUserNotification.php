@@ -59,7 +59,6 @@ abstract class AbstractUserNotification extends AbstractNotification implements 
     public function toNotification($notifiable)
     {
         return (new NotificationMessage())
-            ->template('notification')
             ->subjectData(['user' => $this->user])
             ->viewData(['user' => $this->user]);
     }

@@ -183,17 +183,19 @@ class Users extends DataTable
                             'data'      => 'email',
                             'name'      => 'email',
                             'title'     => trans('antares/foundation::label.users.email'),
-                            'className' => 'bolded',
+                            'className' => 'bolded tabletH laptop desktop',
                         ])
                         ->addColumn([
-                            'data'  => 'created_at',
-                            'name'  => 'created_at',
-                            'title' => trans('antares/foundation::label.users.created_at'),
+                            'data'      => 'created_at',
+                            'name'      => 'created_at',
+                            'title'     => trans('antares/foundation::label.users.created_at'),
+                            'className' => 'bolded tabletV laptop desktop',
                         ])
                         ->addColumn([
-                            'data'  => 'status',
-                            'name'  => 'status',
-                            'title' => trans('antares/foundation::label.users.status'),
+                            'data'      => 'status',
+                            'name'      => 'status',
+                            'title'     => trans('antares/foundation::label.users.status'),
+                            'className' => 'bolded tabletV tabletH laptop desktop',
                         ])
                         ->addAction([
                             'name'       => 'action',
@@ -215,6 +217,7 @@ class Users extends DataTable
                             'aoColumnDefs' => [
                                 ['width' => '5%', 'targets' => 0],
                                 ['width' => '10%', 'targets' => 6],
+                                ['width' => '1%', 'targets' => 7],
                             ]
                         ])->zeroDataLink('Create new user', handles('antares::users/create'));
     }
