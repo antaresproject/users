@@ -24,6 +24,7 @@ namespace Antares\Users\Http\Presenters;
 use Antares\Contracts\Html\Form\Fieldset;
 use Antares\Contracts\Html\Form\Grid as FormGrid;
 use Antares\Contracts\Html\Form\Factory as FormFactory;
+use Antares\Events\Form\Form;
 use Antares\Users\Http\Form\Account as AccountForm;
 use Illuminate\Support\Facades\Event;
 use Antares\Tester\Traits\TestableTrait;
@@ -74,6 +75,7 @@ class Account extends Presenter
     public function password($model)
     {
         Event::fire('antares.forms', 'user.password');
+        Event::fire(new Form('user.password'));
         return $this->form->of('antares.account: password', function (FormGrid $form) use ($model) {
                     $form->setup($this, 'antares::account/password', $model);
                     $form->hidden('id');

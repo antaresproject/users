@@ -21,6 +21,7 @@
 
 namespace Antares\Users\Http\Middleware;
 
+use Antares\Events\Authentication\AuthCheck;
 use Antares\Users\Http\Middleware\Can;
 
 class Authenticate extends Can
@@ -36,6 +37,7 @@ class Authenticate extends Can
     protected function authorize($action = null)
     {
         \Illuminate\Support\Facades\Event::fire('antares.auth');
+        \Illuminate\Support\Facades\Event::fire(new AuthCheck());
         return $this->auth->check();
     }
 

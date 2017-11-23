@@ -20,6 +20,7 @@
 
 namespace Antares\Users;
 
+use Antares\Events\SystemReady\AdminReady;
 use Antares\Foundation\Support\Providers\ModuleServiceProvider;
 use Antares\Model\User;
 use Antares\Notifications\Helpers\NotificationsEventHelper;
@@ -93,7 +94,7 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     protected function registerUsersActivity(Router $router)
     {
-        Event::listen('antares.ready: admin', UsersActivityPlaceholder::class);
+        Event::listen(AdminReady::class, UsersActivityPlaceholder::class);
         $router->pushMiddlewareToGroup('web', CaptureUserActivityMiddleware::class);
     }
 
