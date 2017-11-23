@@ -20,6 +20,7 @@
 
 namespace Antares\Users;
 
+use Antares\Events\SystemReady\AdminReady;
 use Antares\Foundation\Support\Providers\ModuleServiceProvider;
 use Antares\Users\Http\Handlers\UsersActivityPlaceholder;
 use Antares\Users\Http\Handlers\UserViewBreadcrumbMenu;
@@ -82,7 +83,7 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     protected function registerUsersActivity(Router $router)
     {
-        Event::listen('antares.ready: admin', UsersActivityPlaceholder::class);
+        Event::listen(AdminReady::class, UsersActivityPlaceholder::class);
         $router->pushMiddlewareToGroup('web', CaptureUserActivityMiddleware::class);
     }
 
