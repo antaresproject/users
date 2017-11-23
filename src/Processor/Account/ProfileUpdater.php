@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -23,7 +23,6 @@ namespace Antares\Users\Processor\Account;
 use Antares\Contracts\Foundation\Command\Account\ProfileUpdater as ProfileUpdaterContract;
 use Antares\Contracts\Foundation\Listener\Account\ProfileUpdater as Listener;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -64,9 +63,10 @@ class ProfileUpdater extends User implements ProfileUpdaterContract
         if (!$this->validateCurrentUser($user, $input)) {
             return $listener->abortWhenUserMismatched();
         }
+        $form = $this->presenter->profile($user, 'antares::account');
 
         $validation = $this->validator->onUpdate()->with($input, 'user.profile.customfields.validate', ['name' => 'user.profile']);
-        if ($validation->fails()) {
+        if (!$form->isValid()) {
             return $listener->updateProfileFailedValidation($validation->getMessageBag());
         }
         try {
@@ -97,10 +97,7 @@ class ProfileUpdater extends User implements ProfileUpdaterContract
         if (isset($input['password']) && strlen($input['password'])) {
             $user->setAttribute('password', $input['password']);
         }
-
         $target = $this->movePicture($input);
-
-
         $this->fireEvent('updating', [$user]);
         $this->fireEvent('saving', [$user]);
         DB::transaction(function () use ($user, $target) {
@@ -112,6 +109,7 @@ class ProfileUpdater extends User implements ProfileUpdaterContract
             }
             $this->fireCustomFieldsEvent('profile.save', [$user, 'namespace' => 'user.profile']);
         });
+
         $this->fireEvent('updated', [$user]);
         $this->fireEvent('saved', [$user]);
     }

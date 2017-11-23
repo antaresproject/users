@@ -19,6 +19,8 @@
  */
 use Illuminate\Routing\Router;
 
+/* @var $router Router */
+
 $router->group(['prefix' => 'account'], function (Router $router) {
     $router->get('/', 'Account\ProfileUpdaterController@edit');
     $router->post('/', 'Account\ProfileUpdaterController@update');
@@ -27,6 +29,7 @@ $router->group(['prefix' => 'account'], function (Router $router) {
     $router->post('picture', 'UsersController@picture');
     $router->get('gravatar', 'UsersController@gravatar');
 });
+
 
 
 $router->match(['GET', 'POST'], 'users/index', 'UsersController@index');
@@ -39,3 +42,7 @@ $router->resource('users', 'UsersController');
 
 $router->get('login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');
 $router->get('logout/with/{key}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
+
+
+
+

@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -28,6 +28,12 @@ use Antares\Contracts\Foundation\Command\Account\UserRemover as UserRemoverComma
 use Antares\Contracts\Foundation\Command\Account\UserUpdater as UserUpdaterCommand;
 use Antares\Contracts\Foundation\Listener\Account\UserViewer as UserViewerListener;
 use Antares\Contracts\Foundation\Command\Account\UserViewer as UserViewerCommand;
+use Antares\Users\Events\UserCreated;
+use Antares\Users\Events\UserDeleted;
+use Antares\Users\Events\UserNotCreated;
+use Antares\Users\Events\UserNotDeleted;
+use Antares\Users\Events\UserNotUpdated;
+use Antares\Users\Events\UserUpdated;
 use Antares\Users\Http\Presenters\User as Presenter;
 use Antares\Routing\Traits\ControllerResponseTrait;
 use Antares\Users\Validation\User as Validator;
@@ -46,10 +52,9 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
     use ControllerResponseTrait;
 
     /**
-     * Create a new processor instance.
-     *
-     * @param  \Antares\Users\Http\Presenters\User  $presenter
-     * @param  \Antares\Users\Validation\User  $validator
+     * User constructor.
+     * @param Presenter $presenter
+     * @param Validator $validator
      */
     public function __construct(Presenter $presenter, Validator $validator)
     {
@@ -142,9 +147,12 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
         } catch (Exception $e) {
             Log::emergency($e);
             DB::rollback();
+            event(new UserNotCreated($user));
+
             return $listener->createUserFailed(['error' => $e->getMessage()]);
         }
         DB::commit();
+        event(new UserCreated($user));
 
         return $listener->userCreated();
     }
@@ -159,7 +167,6 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
      */
     public function update(UserUpdaterListener $listener, $id, array $input)
     {
-
         if ((string) $id !== array_get($input, 'id') && !request()->wantsJson()) {
             return $listener->abortWhenUserMismatched();
         }
@@ -175,10 +182,13 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
             $this->saving($user, $input, 'update');
         } catch (Exception $e) {
             Log::emergency($e);
-            event('notification.user_has_not_been_updated', ['variables' => ['user' => $user]]);
+
+            event(new UserNotUpdated($user));
+
             return $listener->updateUserFailed(['error' => $e->getMessage()]);
         }
-        event('notification.user_has_been_updated', ['variables' => ['user' => $user]]);
+
+        event(new UserUpdated($user));
         return $listener->userUpdated();
     }
 
@@ -200,8 +210,11 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
                     $this->fireEvent('deleting', [$user]);
                     $user->delete();
                     $this->fireEvent('deleted', [$user]);
+                    event(new UserDeleted($user));
                 }
             });
+
+
             return $listener->usersDeleted();
         }
 
@@ -216,8 +229,11 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
                 $user->delete();
             });
             $this->fireEvent('deleted', [$user]);
+            event(new UserDeleted($user));
         } catch (Exception $e) {
             Log::emergency($e);
+            event(new UserNotDeleted($user));
+
             return $listener->userDeletionFailed(['error' => $e->getMessage()]);
         }
 
@@ -227,11 +243,11 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
     /**
      * Save the user.
      *
-     * @param  \Antares\Model\User  $user
-     * @param  array  $input
-     * @param  string  $type
-     *
+     * @param Eloquent $user
+     * @param array $input
+     * @param string $type
      * @return bool
+     * @throws Exception
      */
     protected function saving(Eloquent $user, $input = [], $type = 'create')
     {

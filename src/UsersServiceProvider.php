@@ -22,6 +22,15 @@ namespace Antares\Users;
 
 use Antares\Events\SystemReady\AdminReady;
 use Antares\Foundation\Support\Providers\ModuleServiceProvider;
+use Antares\Model\User;
+use Antares\Notifications\Helpers\NotificationsEventHelper;
+use Antares\Users\Events\AbstractUserEvent;
+use Antares\Users\Events\UserCreated;
+use Antares\Users\Events\UserDeleted;
+use Antares\Users\Events\UserNotCreated;
+use Antares\Users\Events\UserNotDeleted;
+use Antares\Users\Events\UserNotUpdated;
+use Antares\Users\Events\UserUpdated;
 use Antares\Users\Http\Handlers\UsersActivityPlaceholder;
 use Antares\Users\Http\Handlers\UserViewBreadcrumbMenu;
 use Antares\Users\Http\Handlers\UsersBreadcrumbMenu;
@@ -29,6 +38,7 @@ use Antares\Contracts\Auth\Command\ThrottlesLogins;
 use Antares\Users\Auth\BasicThrottle;
 use Antares\Foundation\MenuComposer;
 use Antares\Users\Http\Middleware\CaptureUserActivityMiddleware;
+use Antares\Users\Listeners\NotificationsSubscriber;
 use Antares\Users\Memory\Avatar;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Event;
@@ -58,8 +68,9 @@ class UsersServiceProvider extends ModuleServiceProvider
     public function register()
     {
         parent::register();
+
         $this->registerThrottlesLogins();
-        $this->app->singleton(Avatar::class, function ($app) {
+        $this->app->singleton(Avatar::class, function () {
             return new Avatar();
         });
     }
@@ -92,19 +103,69 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function boot()
     {
+
+        parent::boot();
+
         $router = $this->app->make(Router::class);
-        $path   = __DIR__ . '/../';
-        $this->addConfigComponent($this->routeGroup, $this->routeGroup, "{$path}/resources/config");
-        $this->addLanguageComponent($this->routeGroup, $this->routeGroup, "{$path}/resources/lang");
+
         if (!$this->app->routesAreCached()) {
-            require "frontend.php";
+            require __DIR__ . "/frontend.php";
         }
-        $path = __DIR__;
-        $this->loadBackendRoutesFrom("{$path}/backend.php");
+    }
+
+    /**
+     * boot the service provider.
+     * 
+     * @return void
+     */
+    public function bootExtensionComponents()
+    {
+        $router = $this->app->make(Router::class);
         MenuComposer::getInstance()->compose(UsersBreadcrumbMenu::class);
         $this->attachMenu([UserViewBreadcrumbMenu::class]);
         $this->registerUsersActivity($router);
-        $this->bootApiRouting($router);
+
+        $this->loadBackendRoutesFrom(__DIR__ . "/backend.php");
+        $this->loadFrontendRoutesFrom(__DIR__ . "/frontend.php");
+    }
+
+    public function booted()
+    {
+        $this->setupNotifications();
+    }
+
+    protected function setupNotifications()
+    {
+        $adminRecipient = function() {
+            return User::administrators()->get();
+        };
+
+        $clientRecipient = function(AbstractUserEvent $event) {
+            return $event->user;
+        };
+
+        NotificationsEventHelper::make()
+                ->event(UserCreated::class, 'Users', 'When user is created')
+                ->addAdminRecipient($adminRecipient)
+                ->addClientRecipient($clientRecipient)
+                ->register()
+                ->event(UserUpdated::class, 'Users', 'When user is updated')
+                ->addAdminRecipient($adminRecipient)
+                ->addClientRecipient($clientRecipient)
+                ->register()
+                ->event(UserDeleted::class, 'Users', 'When user is deleted')
+                ->addAdminRecipient($adminRecipient)
+                ->addClientRecipient($clientRecipient)
+                ->register()
+                ->event(UserNotCreated::class, 'Users', 'When user not created')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+                ->event(UserNotUpdated::class, 'Users', 'When user is updated')
+                ->addAdminRecipient($adminRecipient)
+                ->register()
+                ->event(UserNotDeleted::class, 'Users', 'When user is deleted')
+                ->addAdminRecipient($adminRecipient)
+                ->register();
     }
 
     /**
@@ -114,7 +175,7 @@ class UsersServiceProvider extends ModuleServiceProvider
      */
     public function provides()
     {
-        return [Avatar::class];
+        return [Avatar::class, NotificationsSubscriber::class];
     }
 
 }

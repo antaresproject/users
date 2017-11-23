@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -21,6 +21,7 @@
 namespace Antares\Users\Http\Datatables;
 
 use Antares\Users\Http\Filter\UserCreatedAtFilter;
+use Antares\Users\Http\Filter\UserStatusFilter;
 use Antares\Datatables\Services\DataTable;
 use Antares\Support\Facades\Foundation;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +62,7 @@ class Users extends DataTable
      */
     protected $filters = [
         UserCreatedAtFilter::class,
+        UserStatusFilter::class
     ];
 
     /**
@@ -104,51 +106,56 @@ class Users extends DataTable
         $canUpdateUser = $acl->can('user-update');
         $canDeleteUser = $acl->can('user-delete');
 
-        $return = $this->prepare()
-                ->filterColumn('firstname', function ($query, $keyword) {
-                    $query->where('firstname', 'like', "%$keyword%");
-                })
-                ->filterColumn('lastname', function ($query, $keyword) {
-                    $query->where('lastname', 'like', "%$keyword%");
-                })
-                ->filterColumn('email', function ($query, $keyword) {
-                    $query->where('email', 'like', "%$keyword%");
-                })
-                ->filterColumn('status', function ($query, $keyword) {
-                    $value = null;
-                    switch ($keyword) {
-                        case 'archived':
-                            $value = 0;
-                            break;
-                        case 'active':
-                            $value = 1;
-                            break;
-                        default:
-                            if (is_numeric($keyword) && $keyword <= 1) {
-                                $value = $keyword;
+        return $this->prepare()
+                        ->filterColumn('firstname', function ($query, $keyword) {
+                            $query->where('firstname', 'like', "%$keyword%");
+                        })
+                        ->filterColumn('lastname', function ($query, $keyword) {
+                            $query->where('lastname', 'like', "%$keyword%");
+                        })
+                        ->filterColumn('email', function ($query, $keyword) {
+                            $query->where('email', 'like', "%$keyword%");
+                        })
+                        ->filterColumn('sample_module', function ($query, $keyword) {
+                            return $query;
+                        })
+                        ->filterColumn('status', function ($query, $keyword) {
+                            $value = null;
+                            switch ($keyword) {
+                                case 'archived':
+                                    $value = 0;
+                                    break;
+                                case 'active':
+                                    $value = 1;
+                                    break;
+                                default:
+                                    if (is_numeric($keyword) && $keyword <= 1) {
+                                        $value = $keyword;
+                                    }
+                                    break;
                             }
-                            break;
-                    }
-                    if (!is_null($value)) {
-                        $query->where('status', '=', $value);
-                    }
-                })
-                ->editColumn('firstname', function ($row = null) {
-                    return ($row->firstname) ? $row->firstname : '---';
-                })
-                ->editColumn('lastname', function ($row = null) {
-                    return ($row->lastname) ? $row->lastname : '---';
-                })
-                ->editColumn('email', $this->getUserEmail($query = null))
-                ->editColumn('created_at', function ($model) {
-                    return format_x_days($model->created_at);
-                })
-                ->editColumn('status', function ($model) {
-                    return ((int) $model->status) ? '<span class="label-basic label-basic--success">ACTIVE</span>' : '<span class="label-basic label-basic--danger">Archived</span>';
-                })
-                ->addColumn('action', $this->getActionsColumn($canUpdateUser, $canDeleteUser))
-                ->make(true);
-        return $return;
+                            if (!is_null($value)) {
+                                $query->where('status', '=', $value);
+                            }
+                        })
+                        ->editColumn('reorder', function ($row = null) {
+                            return '<i class="zmdi zmdi-arrows zmdi-hc-2x"></i>';
+                        })
+                        ->editColumn('firstname', function ($row = null) {
+                            return ($row->firstname) ? $row->firstname : '---';
+                        })
+                        ->editColumn('lastname', function ($row = null) {
+                            return ($row->lastname) ? $row->lastname : '---';
+                        })
+                        ->editColumn('email', $this->getUserEmail($query = null))
+                        ->editColumn('created_at', function ($model) {
+                            return format_x_days($model->created_at);
+                        })
+                        ->editColumn('status', function ($model) {
+                            return ((int) $model->status) ? '<span class="label-basic label-basic--success">ACTIVE</span>' : '<span class="label-basic label-basic--danger">Archived</span>';
+                        })
+                        ->addColumn('action', $this->getActionsColumn($canUpdateUser, $canDeleteUser))
+                        ->make(true);
     }
 
     /**
@@ -156,7 +163,6 @@ class Users extends DataTable
      */
     public function html()
     {
-        view()->share('content_class', 'side-menu');
         $html = app('html');
 
         return $this->setName('Users List')
@@ -177,33 +183,43 @@ class Users extends DataTable
                             'data'      => 'email',
                             'name'      => 'email',
                             'title'     => trans('antares/foundation::label.users.email'),
-                            'className' => 'bolded',
+                            'className' => 'bolded tabletH laptop desktop',
                         ])
                         ->addColumn([
-                            'data'  => 'created_at',
-                            'name'  => 'created_at',
-                            'title' => trans('antares/foundation::label.users.created_at'),
+                            'data'      => 'created_at',
+                            'name'      => 'created_at',
+                            'title'     => trans('antares/foundation::label.users.created_at'),
+                            'className' => 'bolded tabletV laptop desktop',
                         ])
                         ->addColumn([
-                            'data'  => 'status',
-                            'name'  => 'status',
-                            'title' => trans('antares/foundation::label.users.status'),
+                            'data'      => 'status',
+                            'name'      => 'status',
+                            'title'     => trans('antares/foundation::label.users.status'),
+                            'className' => 'bolded tabletV tabletH laptop desktop',
                         ])
                         ->addAction([
-                            'name'       => 'edit',
+                            'name'       => 'action',
                             'title'      => '',
                             'class'      => 'mass-actions dt-actions',
                             'orderable'  => false,
                             'searchable' => false,
+                            'filterable' => false,
                         ])
                         ->addMassAction('delete', $html->link(handles('antares/foundation::users/delete', ['csrf' => true]), $html->raw('<i class="zmdi zmdi-delete"></i><span>' . trans('Delete') . '</span>'), [
                                     'class'            => "triggerable confirm mass-action",
                                     'data-title'       => trans("Are you sure?"),
                                     'data-description' => trans('Deleting users'),
                         ]))
-                        ->setDeferedData()
                         ->addGroupSelect($this->statuses(), 5, 1)
-                        ->ajax(handles('antares/foundation::/users/index'));
+                        ->ajax(handles('antares/foundation::/users/index'))
+                        ->parameters([
+                            'order'        => [[0, 'desc']],
+                            'aoColumnDefs' => [
+                                ['width' => '5%', 'targets' => 0],
+                                ['width' => '10%', 'targets' => 6],
+                                ['width' => '1%', 'targets' => 7],
+                            ]
+                        ])->zeroDataLink('Create new user', handles('antares::users/create'));
     }
 
     /**

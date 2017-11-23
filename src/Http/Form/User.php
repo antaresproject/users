@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -90,28 +90,23 @@ class User extends FormBuilder implements Presenter
     {
         $fieldset->control('input:text', 'email')
                 ->label(trans('antares/foundation::label.users.email'))
-                ->wrapper(['class' => 'w250'])
                 ->help('E-mail address which will be used to login.');
 
         $fieldset->control('input:text', 'firstname')
                 ->label(trans('antares/foundation::label.users.firstname'))
-                ->wrapper(['class' => 'w250'])
                 ->help('Firstname field is required.');
 
         $fieldset->control('input:text', 'lastname')
                 ->label(trans('antares/foundation::label.users.lastname'))
-                ->wrapper(['class' => 'w250'])
                 ->help('Lastname field is required.');
 
 
         $fieldset->control('input:password', 'password')
                 ->label(trans('antares/foundation::label.users.password'))
-                ->wrapper(['class' => 'w300'])
                 ->help('Password should contain min. 5 characters.');
 
         $fieldset->control('input:password', 'confirm_password')
                 ->label(trans('antares/users::messages.confirm_password'))
-                ->wrapper(['class' => 'w300'])
                 ->help('Password should same as value in password field.');
     }
 

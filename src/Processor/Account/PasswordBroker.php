@@ -11,25 +11,25 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
  * @link       http://antaresproject.io
  */
 
-
 namespace Antares\Users\Processor\Account;
 
-use Illuminate\Support\Facades\Auth;
-use Antares\Model\User as Eloquent;
-use Antares\Support\Facades\Foundation;
-use Antares\Foundation\Processor\Processor;
-use Antares\Contracts\Auth\Listener\PasswordReset;
-use Antares\Contracts\Auth\Listener\PasswordResetLink;
-use Illuminate\Contracts\Auth\PasswordBroker as Password;
 use Antares\Contracts\Auth\Command\PasswordBroker as Command;
 use Antares\Users\Validation\AuthenticateUser as Validator;
+use Illuminate\Contracts\Auth\PasswordBroker as Password;
+use Antares\Contracts\Auth\Listener\PasswordResetLink;
+use Antares\Contracts\Auth\Listener\PasswordReset;
+use Antares\Foundation\Processor\Processor;
+use Antares\Support\Facades\Foundation;
+use Illuminate\Support\Facades\Auth;
+use Antares\Model\User as Eloquent;
+use Exception;
 
 class PasswordBroker extends Processor implements Command
 {
@@ -71,10 +71,15 @@ class PasswordBroker extends Processor implements Command
         $memory = Foundation::memory();
         $site   = $memory->get('site.name', 'Antares');
         $data   = ['email' => $input['email']];
+        try {
+            $response = $this->password->sendResetLink($data, function ($mail) use ($site) {
+                $mail->subject(trans('antares/foundation::email.forgot.request', ['site' => $site]));
+            });
+        } catch (Exception $ex) {
+            return $listener->resetLinkFailed('Unable to send message.');
+        }
 
-        $response = $this->password->sendResetLink($data, function ($mail) use ($site) {
-            $mail->subject(trans('antares/foundation::email.forgot.request', ['site' => $site]));
-        });
+
 
         if ($response != Password::RESET_LINK_SENT) {
             return $listener->resetLinkFailed($response);

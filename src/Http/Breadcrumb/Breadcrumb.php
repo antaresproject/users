@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -79,7 +79,7 @@ class Breadcrumb
         } else {
             Breadcrumbs::register('user-action', function($breadcrumbs) use($model) {
                 $breadcrumbs->parent('users');
-                $breadcrumbs->push(trans('antares/users::messages.breadcrumbs.edit', ['name' => $model->fullname]));
+                $breadcrumbs->push(trans('antares/users::messages.breadcrumbs.edit', ['id' => $model->id, 'name' => $model->fullname]));
             });
         }
         view()->share('breadcrumbs', Breadcrumbs::render('user-action'));

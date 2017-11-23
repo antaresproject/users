@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -54,6 +54,9 @@ class CredentialController extends AdminController implements AuthenticateListen
      */
     public function index()
     {
+        if (!app('antares.installed')) {
+            return redirect(handles('antares::install'));
+        }
         $select = User::select(['email'])->whereHas('roles', function($query) {
             $query->where('name', area());
         });
@@ -129,7 +132,7 @@ class CredentialController extends AdminController implements AuthenticateListen
     public function userHasLoggedIn(Authenticatable $user, $redirect)
     {
         messages('success', trans('antares/foundation::response.credential.logged-in'));
-        return Redirect::intended($redirect);
+        return redirect($redirect);
     }
 
     /**

@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -113,9 +113,7 @@ class AuthenticateUser extends Authenticate implements Command
     protected function handleUserWasAuthenticated(Listener $listener, array $input, ThrottlesCommand $throttles = null)
     {
 
-        if ($throttles) {
-            //$throttles->clearLoginAttempts($input);
-        }
+
         $redirect = ($this->acl->make('antares')->can('show-dashboard')) ? handles('antares::/') : handles('client');
 
         auth()->guard('web')->getSession()->remove('auth');

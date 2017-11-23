@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -30,10 +30,9 @@ abstract class User extends Processor
 {
 
     /**
-     * Create a new processor instance.
-     *
-     * @param  \Antares\Foundation\Http\Presenters\Account  $presenter
-     * @param  \Antares\Foundation\Validation\Account  $validator
+     * User constructor.
+     * @param Presenter $presenter
+     * @param Validator $validator
      */
     public function __construct(Presenter $presenter, Validator $validator)
     {

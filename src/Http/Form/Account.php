@@ -11,7 +11,7 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Antares Core
- * @version    0.9.0
+ * @version    0.9.2
  * @author     Antares Team
  * @license    BSD License (3-clause)
  * @copyright  (c) 2017, Antares
@@ -50,37 +50,39 @@ class Account extends Grid
             $fieldset->control('input:text', 'email')
                     ->label(trans('antares/foundation::label.users.email'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w250'])
-                    ->help('E-mail address which will be used to first login.');
+                    ->help('E-mail address which will be used to first login.')
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7']);
 
             $fieldset->control('input:text', 'firstname')
                     ->label(trans('antares/foundation::label.users.firstname'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w270'])
-                    ->help('Firstname field is required.');
+                    ->help('Firstname field is required.')
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7']);
 
             $fieldset->control('input:text', 'lastname')
                     ->label(trans('antares/foundation::label.users.lastname'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w270'])
-                    ->help('Lastname field is required.');
+                    ->help('Lastname field is required.')
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7']);
 
             $fieldset->control('input:password', 'password')
                     ->label(trans('antares/foundation::label.users.password'))
-                    ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w300'])
-                    ->help('Password should contain min. 5 characters.');
+                    ->attributes(['class' => 'mdl-textfield__input', 'autocomplete' => 'off'])
+                    ->help('Password should contain min. 5 characters.')
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7'])
+                    ->value('');
 
             $fieldset->control('input:password', 'password_confirmation')
                     ->label(trans('antares/foundation::label.users.password_retype'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'w300']);
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7'])
+                    ->help('Password should same as value in password field.');
 
 
             $control = $fieldset->control('button', 'button')
                     ->attributes([
                 'type'  => 'submit',
-                'class' => 'btn btn--submit btn--s-xxl btn--primary mdl-button mdl-js-button mdl-js-ripple-effect'
+                'class' => 'btn btn--submit btn--primary mdl-button mdl-js-button mdl-js-ripple-effect'
             ]);
 
             (!auth()->guest()) ? $control->value(trans('antares/foundation::label.save_changes')) : $control->value(trans('antares/foundation::label.users.register'));
@@ -104,8 +106,7 @@ class Account extends Grid
         }
 
         $this->rules([
-            'email'                 => ['required', 'email', 'unique:tbl_users,email'],
-            'fullname'              => ['required', 'min:3', 'max:255'],
+            'email'                 => ['required', 'email', 'unique:tbl_users,email' . ((!$model->exists) ? '' : ',' . $model->id)],
             'password'              => ['required', 'min:3', 'max:20', 'confirmed'],
             'password_confirmation' => ['required', 'min:3', 'max:20']
         ]);
