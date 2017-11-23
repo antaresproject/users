@@ -43,7 +43,8 @@ return [
         'mass_actions'                => [
             'change_status_title'       => 'Change status (dependable)',
             'change_status_question'    => 'Are you sure to change status of selected users?',
-            'change_status_description' => 'Changing status of selected users...'
+            'change_status_description' => 'Changing status of selected users...',
+            'activate_status_title'     => 'Activate / Deactivate'
         ]
     ],
     'breadcrumbs'       => [
