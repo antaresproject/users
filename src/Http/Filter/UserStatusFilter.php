@@ -65,11 +65,11 @@ class UserStatusFilter extends SelectFilter implements DataTableScopeContract
      */
     public function apply($builder)
     {
-//        $values = $this->getValues();
-//        if (empty($values)) {
-//            return $builder;
-//        }
-//        $builder->whereIn('type_id', $values);
+        $values = $this->getValues();
+        if (!count($values)) {
+            return $builder;
+        }
+        $builder->whereIn('status', (array) $values);
     }
 
 }

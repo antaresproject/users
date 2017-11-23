@@ -67,14 +67,16 @@ class Account extends Grid
 
             $fieldset->control('input:password', 'password')
                     ->label(trans('antares/foundation::label.users.password'))
-                    ->attributes(['class' => 'mdl-textfield__input'])
+                    ->attributes(['class' => 'mdl-textfield__input', 'autocomplete' => 'off'])
                     ->help('Password should contain min. 5 characters.')
-                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7']);
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7'])
+                    ->value('');
 
             $fieldset->control('input:password', 'password_confirmation')
                     ->label(trans('antares/foundation::label.users.password_retype'))
                     ->attributes(['class' => 'mdl-textfield__input'])
-                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7']);
+                    ->wrapper(['class' => 'col-mb-16 col-18 col-dt-12 col-ld-7'])
+                    ->help('Password should same as value in password field.');
 
 
             $control = $fieldset->control('button', 'button')
@@ -104,8 +106,7 @@ class Account extends Grid
         }
 
         $this->rules([
-            'email'                 => ['required', 'email', 'unique:tbl_users,email'],
-            'fullname'              => ['required', 'min:3', 'max:255'],
+            'email'                 => ['required', 'email', 'unique:tbl_users,email' . ((!$model->exists) ? '' : ',' . $model->id)],
             'password'              => ['required', 'min:3', 'max:20', 'confirmed'],
             'password_confirmation' => ['required', 'min:3', 'max:20']
         ]);
