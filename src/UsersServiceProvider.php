@@ -111,6 +111,8 @@ class UsersServiceProvider extends ModuleServiceProvider
         if (!$this->app->routesAreCached()) {
             require __DIR__ . "/frontend.php";
         }
+
+        $this->importNotifications('antaresproject/component-users');
     }
 
     /**
