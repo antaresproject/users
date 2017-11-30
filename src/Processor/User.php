@@ -229,7 +229,6 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
                 $user->delete();
             });
             $this->fireEvent('deleted', [$user]);
-            event(new UserDeleted($user));
         } catch (Exception $e) {
             Log::emergency($e);
             event(new UserNotDeleted($user));

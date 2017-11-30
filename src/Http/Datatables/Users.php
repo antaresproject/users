@@ -249,7 +249,7 @@ class Users extends DataTable
             $this->tableActions = [];
             $user               = auth()->user();
             if ($canUpdateUser) {
-                $this->addTableAction('show', $row, $html->link(handles("antares::users/{$row->id}"), trans('antares/foundation::label.show'), ['data-icon' => 'eye']));
+                $this->addTableAction('show', $row, $html->link(handles("antares::users/{$row->id}"), trans('antares/foundation::label.show'), ['data-icon' => 'eye', 'class' => 'default']));
             }
             if ($canUpdateUser) {
                 $this->addTableAction('edit', $row, $html->link(handles("antares::users/{$row->id}/edit"), trans('antares/foundation::label.edit'), ['data-icon' => 'edit']));

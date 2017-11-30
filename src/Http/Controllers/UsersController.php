@@ -298,7 +298,7 @@ class UsersController extends AdminController implements UserCreator, UserRemove
      */
     public function userDeleted()
     {
-        $message = trans('antares/foundation::response.users.delete');
+        $message = trans_choice('antares/foundation::response.users.delete', 1);
         return $this->redirectWithMessage(handles('antares::users/index'), $message);
     }
 

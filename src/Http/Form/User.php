@@ -103,7 +103,8 @@ class User extends FormBuilder implements Presenter
 
         $fieldset->control('input:password', 'password')
                 ->label(trans('antares/foundation::label.users.password'))
-                ->help('Password should contain min. 5 characters.');
+                ->help('Password should contain min. 5 characters.')
+                ->value('');
 
         $fieldset->control('input:password', 'confirm_password')
                 ->label(trans('antares/users::messages.confirm_password'))
