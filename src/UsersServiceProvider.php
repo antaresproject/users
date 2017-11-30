@@ -162,10 +162,10 @@ class UsersServiceProvider extends ModuleServiceProvider
                 ->event(UserNotCreated::class, 'Users', 'When user not created')
                 ->addAdminRecipient($adminRecipient)
                 ->register()
-                ->event(UserNotUpdated::class, 'Users', 'When user is not updated')
+                ->event(UserNotUpdated::class, 'Users', 'When user not updated')
                 ->addAdminRecipient($adminRecipient)
                 ->register()
-                ->event(UserNotDeleted::class, 'Users', 'When user is not deleted')
+                ->event(UserNotDeleted::class, 'Users', 'When user not deleted')
                 ->addAdminRecipient($adminRecipient)
                 ->register();
     }
