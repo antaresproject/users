@@ -257,7 +257,7 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
         $user->firstname = $input['firstname'];
         $user->lastname  = $input['lastname'];
         $user->email     = $input['email'];
-
+        $user->status    = 1;
 
 
         $this->fireEvent($beforeEvent, [$user]);
