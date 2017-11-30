@@ -220,6 +220,7 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
 
         $user = Foundation::make('antares.user')->findOrFail($id);
         if ((string) $user->id === (string) user()->id) {
+            event(new UserNotDeleted($user));
             return $listener->selfDeletionFailed();
         }
 
@@ -229,6 +230,7 @@ class User extends Processor implements UserCreatorCommand, UserRemoverCommand, 
                 $user->delete();
             });
             $this->fireEvent('deleted', [$user]);
+            event(new UserDeleted($user));
         } catch (Exception $e) {
             Log::emergency($e);
             event(new UserNotDeleted($user));
