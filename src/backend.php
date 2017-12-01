@@ -32,17 +32,21 @@ $router->group(['prefix' => 'account'], function (Router $router) {
 
 
 
-$router->match(['GET', 'POST'], 'users/index', 'UsersController@index');
-$router->get('users/elements', 'UsersController@elements');
-$router->post('users/delete', 'UsersController@delete');
-$router->match(['GET', 'POST'], 'users/{id}/status', 'UsersController@status');
-$router->match(['GET', 'POST'], 'users/status', 'UsersController@status');
+
+
+$router->match(['GET', 'POST'], 'users/index', '\Antares\Users\Http\Controllers\UsersController@index');
+$router->get('users/elements', '\Antares\Users\Http\Controllers\UsersController@elements');
+$router->post('users/delete', '\Antares\Users\Http\Controllers\UsersController@delete');
+$router->match(['GET', 'POST'], 'users/{id}/status', '\Antares\Users\Http\Controllers\UsersController@status');
+$router->match(['GET', 'POST'], 'users/status', '\Antares\Users\Http\Controllers\UsersController@status');
+
 $router->resource('users', 'UsersController');
-
-
 $router->get('login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');
 $router->get('logout/with/{key}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
 
+Route::group(['middleware' => ['web']], function () use($router) {
 
-
-
+    $router->get('login', ['as' => 'login', 'uses' => 'CredentialController@index']);
+    $router->post('login', 'CredentialController@login');
+    $router->match(['GET', 'HEAD', 'DELETE'], 'logout', 'CredentialController@logout');
+});

@@ -42,7 +42,8 @@ class AccountPlaceholder extends LeftPane
         $menu->add('devices')
                 ->link(handles('antares::logger/devices/index'))
                 ->title(trans('Devices'))
-                ->icon('zmdi-devices');
+                ->icon('zmdi-devices')
+                ->active(request()->segment(3) === 'devices');
 
         $pane = app()->make('antares.widget')->make('pane.left');
         $pane->add('control')->content(view('antares/acl::partial._control_pane'));
