@@ -294,4 +294,14 @@ class Users extends DataTable
         return handles('antares::users/{id}');
     }
 
+    /**
+     * Checks whether user has access to view datatable
+     * 
+     * @return boolean
+     */
+    public function authorize()
+    {
+        return app('antares.acl')->make('antares')->can('users-list');
+    }
+
 }

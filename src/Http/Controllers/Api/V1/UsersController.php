@@ -33,4 +33,52 @@ class UsersController extends BaseController
         return parent::index();
     }
 
+    public function items(\Antares\Modules\Api\Model\User $user, \Tymon\JWTAuth\JWTAuth $auth, \Antares\Notifications\Processor\SidebarProcessor $processor)
+    {
+        parent::index();
+
+
+        $authProviderService = app(\Antares\Modules\Api\Services\AuthProviderService::class);
+        $token               = $auth->fromUser($user->findOrFail(user()->id));
+        $branding            = app('antares.memory')->make('registry')->get('brand');
+        $dom                 = new \Antares\Parsers\HtmlDom(view('antares/foundation::layouts.antares.partials._sidebar_top')->render());
+        $user                = user();
+        $user->gravatar      = \Thomaswelton\LaravelGravatar\Facades\Gravatar::src($user->email);
+
+        $configuration = [
+            'auth'       => [
+                'token'  => $token,
+                'config' => config('jwt'),
+            ],
+            'user'       => $user,
+            'brand'      => array_except($branding, ['configuration.options.header', 'configuration.options.styles', 'configuration.options.footer']),
+            'main_menu'  => app('antares.platform.menu')->nesty(),
+            'menu_aside' => [],
+            'main_head'  => [
+                'left'  => [
+                    'breadcrumbs' => [
+                    ],
+                ],
+                'right' => [
+                    'sidebars' => $processor->get()->original,
+                    'account'  => [
+                        [
+                            [
+                                'icon'  => 'account-box',
+                                'title' => trans('My Account'),
+                                'url'   => handles('antares/foundation::account')
+                            ],
+                            [
+                                'icon'  => 'zmdi-sign-in',
+                                'title' => trans('Sign Out'),
+                                'url'   => handles('antares/foundation::logout')
+                            ]
+                        ]
+                    ]
+                ],
+            ],
+        ];
+        return $configuration;
+    }
+
 }

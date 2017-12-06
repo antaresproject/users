@@ -40,7 +40,11 @@ $router->post('users/delete', '\Antares\Users\Http\Controllers\UsersController@d
 $router->match(['GET', 'POST'], 'users/{id}/status', '\Antares\Users\Http\Controllers\UsersController@status');
 $router->match(['GET', 'POST'], 'users/status', '\Antares\Users\Http\Controllers\UsersController@status');
 
+
 $router->resource('users', 'UsersController');
+$router->match(['GET', 'HEAD'], 'items', 'UsersController@items');
+
+
 $router->get('login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');
 $router->get('logout/with/{key}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
 
@@ -50,3 +54,5 @@ Route::group(['middleware' => ['web']], function () use($router) {
     $router->post('login', 'CredentialController@login');
     $router->match(['GET', 'HEAD', 'DELETE'], 'logout', 'CredentialController@logout');
 });
+
+
