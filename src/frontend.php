@@ -64,11 +64,11 @@ Route::group(['middleware' => ['web']], function () use($router) {
     } else {
         $router->get('login', ['as' => 'login', 'uses' => '\Antares\Users\Http\Controllers\CredentialController@index']);
         $router->post('login', '\Antares\Users\Http\Controllers\CredentialController@login');
-        $router->match(['GET', 'HEAD', 'DELETE'], 'logout', 'Antares\Users\Http\Controllers\CredentialController@logout');
+        $router->match(['GET', 'HEAD', 'DELETE'], 'logout', '\Antares\Users\Http\Controllers\CredentialController@logout');
     }
 
-    $router->get('antares/login/with/{id}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@login');
-    $router->get('antares/logout/with/{key}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
-    $router->get('login/with/{id}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@login');
-    $router->get('logout/with/{key}', 'Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
+    $router->get('antares/login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');
+    $router->get('antares/logout/with/{key}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
+    $router->get('login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');
+    $router->get('logout/with/{key}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@logout');
 });
