@@ -51,7 +51,6 @@ class User extends FormBuilder implements Presenter
      */
     public function __construct(Model $model)
     {
-
         parent::__construct(app(HtmlGrid::class), app(ClientScript::class), app(Container::class));
         Event::fire('antares.forms', 'users.register');
         Event::fire(new Form('users.register'));
