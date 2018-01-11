@@ -45,6 +45,9 @@ class UsersController extends BaseController
         $user                = user();
         $user->gravatar      = \Thomaswelton\LaravelGravatar\Facades\Gravatar::src($user->email);
 
+        $form = new \Antares\Foundation\Http\Form\Settings(user());
+        return view('antares/foundation::users.edit', ['form' => $form]);
+
         $configuration = [
             'auth'       => [
                 'token'  => $token,
@@ -79,6 +82,92 @@ class UsersController extends BaseController
             ],
         ];
         return $configuration;
+    }
+
+    public function form(\Antares\Modules\Api\Model\User $user, \Tymon\JWTAuth\JWTAuth $auth, \Antares\Notifications\Processor\SidebarProcessor $processor)
+    {
+
+        $manager     = app(\Antares\UI\Navigation\Breadcrumbs\Manager::class);
+        $generated   = $manager->generate();
+        $breadcrumbs = [];
+        foreach ($generated as $item) {
+            $breadcrumbs = array_merge($breadcrumbs, json_decode($item->render(), true));
+        }
+
+
+        $token = $auth->fromUser($user->findOrFail(user()->id));
+
+        $form = new \Antares\Users\Http\Form\User(user());
+
+
+        $sidebar = $processor->get()->original;
+
+        $configuration = [
+            'auth'          => [
+                'token' => $token,
+            ],
+            'aside'         => [],
+            'breadcrumbs'   => $breadcrumbs,
+            'notifications' => $sidebar['notifications'],
+            'alerts'        => $sidebar['alerts'],
+            'form'          => $form
+        ];
+        return view('antares/foundation::users.edit', $configuration);
+    }
+
+    public function widgets($user, \Tymon\JWTAuth\JWTAuth $auth, \Antares\Notifications\Processor\SidebarProcessor $processor)
+    {
+        $manager     = app(\Antares\UI\Navigation\Breadcrumbs\Manager::class);
+        $generated   = $manager->generate();
+        $breadcrumbs = [];
+        foreach ($generated as $item) {
+            $breadcrumbs = array_merge($breadcrumbs, json_decode($item->render(), true));
+        }
+        $token   = $auth->fromUser(app(\Antares\Modules\Api\Model\User::class)->findOrFail(user()->id));
+        $sidebar = $processor->get()->original;
+
+
+
+        $configuration = [
+            'auth'          => [
+                'token' => $token,
+            ],
+            'aside'         => [],
+            'breadcrumbs'   => $breadcrumbs,
+            'notifications' => $sidebar['notifications'],
+            'alerts'        => $sidebar['alerts'],
+            new \Antares\Logger\Widgets\UserDetailsWidget(),
+            new \Antares\Modules\SampleModule\UiComponents\GraphBarWidget(),
+            new \Antares\Logger\Widgets\ItemsWidget(),
+            new \Antares\Logger\Widgets\ActivityLogs\ActivityLogsWidget(),
+            new \Antares\Notifications\Widgets\NotificationSender\NotificationsWidget(app(\Antares\Notifications\Widgets\NotificationSender\Form\NotificationWidgetForm::class))
+        ];
+        return view('antares/foundation::users.edit', $configuration);
+    }
+
+    public function datatable(\Tymon\JWTAuth\JWTAuth $auth, \Antares\Notifications\Processor\SidebarProcessor $processor)
+    {
+        $manager     = app(\Antares\UI\Navigation\Breadcrumbs\Manager::class);
+        $generated   = $manager->generate();
+        $breadcrumbs = [];
+        foreach ($generated as $item) {
+            $json = json_decode($item->render(), true) ?? [];
+
+            $breadcrumbs = array_merge($breadcrumbs, $json);
+        }
+        $token         = $auth->fromUser(app(\Antares\Modules\Api\Model\User::class)->findOrFail(user()->id));
+        $sidebar       = $processor->get()->original;
+        $configuration = [
+            'auth'          => [
+                'token' => $token,
+            ],
+            'aside'         => [],
+            'breadcrumbs'   => $breadcrumbs,
+            'notifications' => $sidebar['notifications'],
+            'alerts'        => $sidebar['alerts'],
+            'datatable'     => app(\Antares\Users\Http\Datatables\Users::class)
+        ];
+        return view('antares/foundation::users.edit', $configuration);
     }
 
 }

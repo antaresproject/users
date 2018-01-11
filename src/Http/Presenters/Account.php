@@ -18,7 +18,6 @@
  * @link       http://antaresproject.io
  */
 
-
 namespace Antares\Users\Http\Presenters;
 
 use Antares\Contracts\Html\Form\Fieldset;
@@ -27,13 +26,10 @@ use Antares\Contracts\Html\Form\Factory as FormFactory;
 use Antares\Events\Form\Form;
 use Antares\Users\Http\Form\Account as AccountForm;
 use Illuminate\Support\Facades\Event;
-use Antares\Tester\Traits\TestableTrait;
 use Antares\Users\Http\Breadcrumb\Breadcrumb;
 
 class Account extends Presenter
 {
-
-    use TestableTrait;
 
     /**
      * breadcrumb instance

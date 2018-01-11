@@ -42,7 +42,10 @@ $router->match(['GET', 'POST'], 'users/status', '\Antares\Users\Http\Controllers
 
 
 $router->resource('users', 'UsersController');
-$router->match(['GET', 'HEAD'], 'items', 'UsersController@items');
+$router->match(['GET', 'HEAD'], 'items', 'UsersController@items')->name('items.index');
+$router->match(['GET', 'HEAD'], 'form', 'UsersController@form')->name('items.form');
+$router->match(['GET', 'HEAD'], 'widgets/{user}', 'UsersController@widgets')->name('items.widgets');
+$router->match(['GET', 'HEAD'], 'datatable', 'UsersController@datatable')->name('items.datatable');
 
 
 $router->get('login/with/{id}', '\Antares\Users\Http\Controllers\LoginAs\AuthController@login');

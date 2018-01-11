@@ -216,8 +216,6 @@ class Users extends DataTable
                             'order'        => [[0, 'desc']],
                             'aoColumnDefs' => [
                                 ['width' => '5%', 'targets' => 0],
-                                ['width' => '10%', 'targets' => 6],
-                                ['width' => '1%', 'targets' => 7],
                             ]
                         ])->zeroDataLink('Create new user', handles('antares::users/create'));
     }

@@ -20,6 +20,7 @@
 
 namespace Antares\Users\Processor\Account;
 
+use Antares\Users\Events\UserCreated;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Antares\Model\User as Eloquent;
@@ -69,6 +70,8 @@ class ProfileCreator extends User implements Command
         try {
             $this->saving($user, $input);
             $this->notifyCreatedUser($user);
+
+            event(new UserCreated($user));
         } catch (Exception $ex) {
             DB::rollback();
             Log::emergency($ex);
@@ -109,7 +112,7 @@ class ProfileCreator extends User implements Command
         $user->setAttribute('password', $input['password']);
         $user->save();
         $user->roles()->sync([
-            Config::get('antares/foundation::roles.member', 2),
+            Config::get('antares/foundation::roles.member', 3),
         ]);
     }
 
