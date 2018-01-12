@@ -145,29 +145,30 @@ class UsersServiceProvider extends ModuleServiceProvider
         $clientRecipient = function(AbstractUserEvent $event) {
             return $event->user;
         };
-
-        NotificationsEventHelper::make()
-                ->event(UserCreated::class, 'Users', 'When user is created')
-                ->addAdminRecipient($adminRecipient)
-                ->addClientRecipient($clientRecipient)
-                ->register()
-                ->event(UserUpdated::class, 'Users', 'When user is updated')
-                ->addAdminRecipient($adminRecipient)
-                ->addClientRecipient($clientRecipient)
-                ->register()
-                ->event(UserDeleted::class, 'Users', 'When user is deleted')
-                ->addAdminRecipient($adminRecipient)
-                ->addClientRecipient($clientRecipient)
-                ->register()
-                ->event(UserNotCreated::class, 'Users', 'When user not created')
-                ->addAdminRecipient($adminRecipient)
-                ->register()
-                ->event(UserNotUpdated::class, 'Users', 'When user not updated')
-                ->addAdminRecipient($adminRecipient)
-                ->register()
-                ->event(UserNotDeleted::class, 'Users', 'When user not deleted')
-                ->addAdminRecipient($adminRecipient)
-                ->register();
+        if (class_exists(NotificationsEventHelper::class)) {
+            NotificationsEventHelper::make()
+                    ->event(UserCreated::class, 'Users', 'When user is created')
+                    ->addAdminRecipient($adminRecipient)
+                    ->addClientRecipient($clientRecipient)
+                    ->register()
+                    ->event(UserUpdated::class, 'Users', 'When user is updated')
+                    ->addAdminRecipient($adminRecipient)
+                    ->addClientRecipient($clientRecipient)
+                    ->register()
+                    ->event(UserDeleted::class, 'Users', 'When user is deleted')
+                    ->addAdminRecipient($adminRecipient)
+                    ->addClientRecipient($clientRecipient)
+                    ->register()
+                    ->event(UserNotCreated::class, 'Users', 'When user not created')
+                    ->addAdminRecipient($adminRecipient)
+                    ->register()
+                    ->event(UserNotUpdated::class, 'Users', 'When user not updated')
+                    ->addAdminRecipient($adminRecipient)
+                    ->register()
+                    ->event(UserNotDeleted::class, 'Users', 'When user not deleted')
+                    ->addAdminRecipient($adminRecipient)
+                    ->register();
+        }
     }
 
     /**
